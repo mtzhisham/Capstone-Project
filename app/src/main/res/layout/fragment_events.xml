@@ -2,14 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UI.EventsFragment">
+    tools:context="com.moataz.eventboard.UI.MainActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:text="Fragment Events"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvContacts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center" />
-
+        android:layout_height="match_parent" />
 </FrameLayout>
