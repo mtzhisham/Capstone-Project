@@ -15,12 +15,7 @@ public class Original implements Parcelable {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("width")
-    @Expose
-    private Integer width;
-    @SerializedName("height")
-    @Expose
-    private Integer height;
+
 
     protected Original(Parcel in) {
         url = in.readString();
@@ -46,21 +41,7 @@ public class Original implements Parcelable {
         this.url = url;
     }
 
-    public Integer getWidth() {
-        return width;
-    }
 
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
 
     @Override
     public int describeContents() {

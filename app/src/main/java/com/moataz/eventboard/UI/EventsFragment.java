@@ -56,13 +56,8 @@ import retrofit2.http.Query;
 public class EventsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     int PLACE_PICKER_REQUEST = 1;
-    String SYNCING_STATUS = "SYNCING_STATUS";
-    String RUNNING = "RUNNING";
-    String STOPPING = "STOPPING";
-    String ACTION = "SYNC";
+
 
     public static final String ACTION_RESP =
             "com.mamlambo.intent.action.MESSAGE_PROCESSED";
@@ -79,6 +74,8 @@ public class EventsFragment extends Fragment {
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
 
+    private static IntentFilter filter;
+
 
 
     public static final String ARG_PAGE = "ARG_PAGE";
@@ -88,8 +85,7 @@ public class EventsFragment extends Fragment {
     List list;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -118,8 +114,6 @@ public class EventsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
             mPage = getArguments().getInt(ARG_PAGE);
         }
         context = getContext();
@@ -128,13 +122,18 @@ public class EventsFragment extends Fragment {
         setHasOptionsMenu(true);
 
 
-
-        IntentFilter filter = new IntentFilter(ACTION_RESP);
+        filter = new IntentFilter(ACTION_RESP);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver = new EventsResponseReciver(new Handler());
         getActivity().registerReceiver(receiver, filter);
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(receiver, filter);
     }
 
     @Override
@@ -156,11 +155,6 @@ public class EventsFragment extends Fragment {
         SharedPreferences sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
 
-
-//            getEvents("Alexandria, Egypt");
-
-//        onRefreshButtonClick(view);
-
             startService("Alexandria, Egypt","1");
 
         return view;
@@ -175,141 +169,7 @@ public class EventsFragment extends Fragment {
         getActivity().startService(msgIntent);
     }
 
-    public void updateView(){
-//        Event event = new Event();
-        EventResponse eventResponse = new EventResponse();
-        EventsAdapter adapter = new EventsAdapter(getContext(), eventResponse.events);
-                // Attach the adapter to the recyclerview to populate items
-                rvContacts.setAdapter(adapter);
-                // Set layout manager to position the items
-                rvContacts.setLayoutManager(new LinearLayoutManager(getActivity()));
-                // That's all!
-              adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-                  @Override
-                  public void onItemClick(int position, View v) {
-                      Toast.makeText(getContext()," "+ position, Toast.LENGTH_LONG).show();
-                      Log.d("adapter",position+"");
 
-
-
-                  }
-
-                  @Override
-                  public void onItemLongClick(int position, View v) {
-
-                  }
-              });
-    }
-
-
-    public void onRefreshButtonClick(View v) {
-
-        // Pass the settings flags by inserting them in a bundle
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putString("address","Alexandria, Egypt");
-        settingsBundle.putString("page","1");
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        /*
-         * Request the sync for the default account, authority, and
-         * manual sync settings
-         */
-        ContentResolver.requestSync(mAccount, AUTHORITY, settingsBundle);
-
-
-    }
-
-    public class SyncReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                //do something
-
-
-                Log.d("respons", extras.getParcelableArrayList("response").toString());
-            }
-        }
-    }
-
-
-
-
-
-
-
-
-//    public void getEvents(String address){
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("https://www.eventbriteapi.com/v3/")
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-//
-//
-//        MyApiEndpointInterface apiService =
-//                retrofit.create(MyApiEndpointInterface.class);
-//
-//
-//        Call<EventResponse> call = apiService.getEvents("Bearer XWN6MIU4KRLP2ZTUGPBU","1",address);
-//        Log.d("EventBoard","" + call.request().url().toString());
-//        call.enqueue(new Callback<EventResponse>() {
-//            @Override
-//            public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-//                int statusCode = response.code();
-//                Log.d("EventBoard","" + statusCode);
-//
-//                Log.d("EventBoard", " size: "+ response.body().events.size());
-//
-//                Log.d("EventBoard", response.body().events.get(1).getName().getText());
-//
-//                // Initialize contacts
-////                contacts = Contact.createContactsList(20);
-//                // Create adapter passing in the sample user data
-//                list = response.body().events;
-//                EventsAdapter adapter = new EventsAdapter(getContext(), response.body().events);
-//                // Attach the adapter to the recyclerview to populate items
-//                rvContacts.setAdapter(adapter);
-//                // Set layout manager to position the items
-//                rvContacts.setLayoutManager(new LinearLayoutManager(getActivity()));
-//                // That's all!
-//              adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-//                  @Override
-//                  public void onItemClick(int position, View v) {
-//                      Toast.makeText(getContext()," "+ position, Toast.LENGTH_LONG).show();
-//                      Log.d("adapter",position+"");
-//
-//
-//
-//                  }
-//
-//                  @Override
-//                  public void onItemLongClick(int position, View v) {
-//
-//                  }
-//              });
-//
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<EventResponse> call, Throwable t) {
-//                Log.d("EventBoard",t.getMessage());
-//            }
-//        });
-//
-//    }
-
-//    public void fire(String URL){
-//
-//        Intent intet = new Intent(getActivity(),FavFragment.class);
-//        intet.putExtra("url",URL);
-//        getActivity().startActivity(intet);
-//
-//    }
 
 
 
@@ -414,12 +274,7 @@ public class EventsFragment extends Fragment {
                 LatLng lg = latLng.getCenter();
                 String toastMsg = String.format("Place: %s %s", lg.latitude ,lg.longitude);
 
-//                getEvents(address);
-                onRefreshButtonClick(view);
-
                 Toast.makeText(getContext(), toastMsg, Toast.LENGTH_LONG).show();
-
-
 
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -436,8 +291,6 @@ public class EventsFragment extends Fragment {
     public class EventsResponseReciver extends BroadcastReceiver {
 
 
-        public static final String ACTION_RESP =
-                "com.mamlambo.intent.action.MESSAGE_PROCESSED";
 
         Intent intentt;
         private final Handler handler;
@@ -480,6 +333,10 @@ public class EventsFragment extends Fragment {
                             Intent intent1 = new Intent(getActivity(),Detail.class);
                             intent1.putExtra("url",text.events.get(position).getLogo().getOriginal().getUrl());
                             intent1.putExtra("name",text.events.get(position).getName().getText());
+
+                            Log.d("response",text.events.get(position).getLogo().getOriginal().getUrl());
+                            Log.d("response",text.events.get(position).getName().getText());
+
                             startActivity(intent1);
 
 

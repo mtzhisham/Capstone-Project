@@ -35,11 +35,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAyEq4rceAI0CI5RUXbCv4aBLhVCatynfU" />
 
-        <activity
-            android:name="com.moataz.eventboard.UI.DetailActicity"
-            android:label="@string/title_activity_detail_acticity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
         <service android:name="com.moataz.eventboard.Syncing.EventsIntentService" />
 
         <activity

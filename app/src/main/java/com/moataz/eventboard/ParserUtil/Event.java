@@ -28,7 +28,6 @@ public class Event implements Parcelable {
     @Expose
     private String url;
 
-
     @SerializedName("start")
     @Expose
     private Start start;
@@ -54,6 +53,9 @@ public class Event implements Parcelable {
     protected Event(Parcel in) {
         name = in.readParcelable(Name.class.getClassLoader());
         logo = in.readParcelable(Logo.class.getClassLoader());
+        description = in.readParcelable(Description.class.getClassLoader());
+        start = in.readParcelable(Start.class.getClassLoader());
+        end = in.readParcelable(End.class.getClassLoader());
         id = in.readString();
         url = in.readString();
         logoId = in.readString();
@@ -167,6 +169,9 @@ public class Event implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(name,i);
         parcel.writeParcelable(logo,i);
+        parcel.writeParcelable(description,i);
+        parcel.writeParcelable(start,i);
+        parcel.writeParcelable(end,i);
         parcel.writeString(id);
         parcel.writeString(url);
         parcel.writeString(logoId);

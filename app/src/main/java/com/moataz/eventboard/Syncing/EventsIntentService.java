@@ -71,40 +71,6 @@ public class EventsIntentService extends IntentService {
                 broadcastIntent.putExtra("response",response.body());
                 sendBroadcast(broadcastIntent);
 
-
-//                Log.d("EventBoard", syncResult.toString());
-
-//                Intent intent = new Intent();
-//                intent.setAction("response");
-//                intent.putParcelableArrayListExtra("response", (ArrayList<? extends Parcelable>) response.body().events);
-//                context.sendBroadcast(intent);
-
-//                // Initialize contacts
-////                contacts = Contact.createContactsList(20);
-//                // Create adapter passing in the sample user data
-//                list = response.body().events;
-//                EventsAdapter adapter = new EventsAdapter(getContext(), response.body().events);
-//                // Attach the adapter to the recyclerview to populate items
-//                rvContacts.setAdapter(adapter);
-//                // Set layout manager to position the items
-//                rvContacts.setLayoutManager(new LinearLayoutManager(getActivity()));
-//                // That's all!
-//                adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-//                    @Override
-//                    public void onItemClick(int position, View v) {
-//                        Toast.makeText(getContext()," "+ position, Toast.LENGTH_LONG).show();
-//                        Log.d("adapter",position+"");
-//
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onItemLongClick(int position, View v) {
-//
-//                    }
-//                });
-//
             }
 
             @Override
@@ -112,8 +78,6 @@ public class EventsIntentService extends IntentService {
                 Log.d("EventBoard",t.getMessage());
             }
         });
-
-
 
 
 

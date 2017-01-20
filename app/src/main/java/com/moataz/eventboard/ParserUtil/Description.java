@@ -14,13 +14,9 @@ public class Description implements Parcelable {
     @SerializedName("text")
     @Expose
     private String text;
-    @SerializedName("html")
-    @Expose
-    private String html;
 
     protected Description(Parcel in) {
         text = in.readString();
-        html = in.readString();
     }
 
     public static final Creator<Description> CREATOR = new Creator<Description>() {
@@ -43,13 +39,7 @@ public class Description implements Parcelable {
         this.text = text;
     }
 
-    public String getHtml() {
-        return html;
-    }
 
-    public void setHtml(String html) {
-        this.html = html;
-    }
 
     @Override
     public int describeContents() {
@@ -59,6 +49,6 @@ public class Description implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(text);
-        parcel.writeString(html);
+
     }
 }
