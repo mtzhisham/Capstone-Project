@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.moataz.MultiDexApplication.eventboard" >
+    package="com.moataz.MultiDexApplication.eventboard">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -14,13 +17,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="android.support.multidex.MultiDexApplication">
-        <activity android:name="com.moataz.eventboard.UI.MainActivity" >
+        android:theme="@style/AppTheme">
+        <activity android:name="com.moataz.eventboard.UI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,13 +31,21 @@
             </intent-filter>
         </activity>
 
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value=""/>
+            android:value="AIzaSyAyEq4rceAI0CI5RUXbCv4aBLhVCatynfU" />
+
+        <activity
+            android:name="com.moataz.eventboard.UI.DetailActicity"
+            android:label="@string/title_activity_detail_acticity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service android:name="com.moataz.eventboard.Syncing.EventsIntentService" />
+
+        <activity
+            android:name="com.moataz.eventboard.UI.Detail"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
-
-
 
 </manifest>

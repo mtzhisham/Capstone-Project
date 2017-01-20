@@ -26,6 +26,7 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
     private List<Event> mEvents;
     // Store the context for easy access
     private Context mContext;
+    private static ClickListener clickListener;
 
 
     // Pass in the events array into the constructor
@@ -39,7 +40,7 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         return mContext;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
@@ -53,11 +54,34 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             nameTextView = (TextView) itemView.findViewById(R.id.event_name);
             idTextView = (TextView) itemView.findViewById(R.id.event_id);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
         }
+
+
+        @Override
+        public void onClick(View v) {
+            clickListener.onItemClick(getAdapterPosition(), v);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            return false;
+        }
+
+
+    }
+
+    public void setOnItemClickListener(ClickListener clickListener) {
+        EventsAdapter.clickListener = clickListener;
+    }
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+        void onItemLongClick(int position, View v);
     }
     @Override
     public EventsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -71,6 +95,9 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         ViewHolder viewHolder = new ViewHolder(eventsView);
         return viewHolder;
     }
+
+
+
 
     @Override
     public void onBindViewHolder(EventsAdapter.ViewHolder holder, int position) {

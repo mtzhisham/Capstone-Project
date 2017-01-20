@@ -1,6 +1,10 @@
 package com.moataz.eventboard.ParserUtil;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.android.gms.plus.model.people.Person;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by moataz on 1/6/2017.
  */
 
-public class Event {
+public class Event implements Parcelable {
 
 
     @SerializedName("name")
@@ -46,6 +50,28 @@ public class Event {
     @SerializedName("logo")
     @Expose
     private Logo logo;
+
+    protected Event(Parcel in) {
+        name = in.readParcelable(Name.class.getClassLoader());
+        logo = in.readParcelable(Logo.class.getClassLoader());
+        id = in.readString();
+        url = in.readString();
+        logoId = in.readString();
+        venueId = in.readString();
+        resourceUri = in.readString();
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public Name getName() {
         return name;
@@ -132,4 +158,19 @@ public class Event {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(name,i);
+        parcel.writeParcelable(logo,i);
+        parcel.writeString(id);
+        parcel.writeString(url);
+        parcel.writeString(logoId);
+        parcel.writeString(venueId);
+        parcel.writeString(resourceUri);
+    }
 }

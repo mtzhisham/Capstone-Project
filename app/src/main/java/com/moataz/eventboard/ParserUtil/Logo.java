@@ -1,12 +1,15 @@
 package com.moataz.eventboard.ParserUtil;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by moataz on 1/6/2017.
  */
-public class Logo {
+public class Logo implements Parcelable {
 
     @SerializedName("original")
     @Expose
@@ -27,6 +30,26 @@ public class Logo {
     @Expose
     private Boolean edgeColorSet;
 
+
+    protected Logo(Parcel in) {
+        original = in.readParcelable(Original.class.getClassLoader());
+        id = in.readString();
+        url = in.readString();
+        aspectRatio = in.readString();
+        edgeColor = in.readString();
+    }
+
+    public static final Creator<Logo> CREATOR = new Creator<Logo>() {
+        @Override
+        public Logo createFromParcel(Parcel in) {
+            return new Logo(in);
+        }
+
+        @Override
+        public Logo[] newArray(int size) {
+            return new Logo[size];
+        }
+    };
 
     public Original getOriginal() {
         return original;
@@ -74,5 +97,19 @@ public class Logo {
 
     public void setEdgeColorSet(Boolean edgeColorSet) {
         this.edgeColorSet = edgeColorSet;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(original,i);
+        parcel.writeString(id);
+        parcel.writeString(url);
+        parcel.writeString(aspectRatio);
+        parcel.writeString(edgeColor);
     }
 }
