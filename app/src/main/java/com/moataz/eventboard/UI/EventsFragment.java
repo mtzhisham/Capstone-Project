@@ -150,7 +150,7 @@ public class EventsFragment extends Fragment {
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
 //        tvTitle.setText("Fragment #" + mPage);
 
-        rvContacts = (RecyclerView) view.findViewById(R.id.rvContacts);
+        rvContacts = (RecyclerView) view.findViewById(R.id.rvEvents);
         Context context = getActivity();
         SharedPreferences sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);

@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.facebook.stetho.Stetho;
 import com.google.android.gms.common.ConnectionResult;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,7 +36,7 @@ FavFragment.OnFragmentInteractionListener, GoogleApiClient.OnConnectionFailedLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Stetho.initializeWithDefaults(this);
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)

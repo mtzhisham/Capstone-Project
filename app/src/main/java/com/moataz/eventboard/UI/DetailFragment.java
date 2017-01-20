@@ -1,17 +1,21 @@
 package com.moataz.eventboard.UI;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.moataz.MultiDexApplication.eventboard.R;
 
 /**
@@ -19,7 +23,22 @@ import com.moataz.MultiDexApplication.eventboard.R;
  */
 public class DetailFragment extends Fragment {
 
+    // The URL used to target the content provider
+    static final Uri CONTENT_URL =
+            Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+    ContentValues values;
+
+    ContentResolver resolver;
+    String name;
+
     public DetailFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        resolver = getActivity().getContentResolver();
     }
 
     @Override
@@ -32,7 +51,7 @@ public class DetailFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         String url = intent.getStringExtra("url");
-        String name = intent.getStringExtra("name");
+         name = intent.getStringExtra("name");
 
         Log.d("detail",name);
 
@@ -44,8 +63,28 @@ public class DetailFragment extends Fragment {
                 .into(imageView);
 
 
+        Button fav = (Button) view.findViewById(R.id.fav);
+        fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                values = new ContentValues();
+                values.put("eDBID", name);
+                values.put("event", name);
+                resolver.insert(CONTENT_URL, values);
+
+            }
+        });
+
+
+
+
         return view;
     }
+
+
+
+
 
 
 

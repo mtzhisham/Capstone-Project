@@ -40,7 +40,22 @@
         <activity
             android:name="com.moataz.eventboard.UI.Detail"
             android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName="com.moataz.eventboard.UI.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.moataz.eventboard.UI.MainActivity" />
+        </activity>
+
+        <provider
+            android:name="com.moataz.eventboard.DataUtil.EventsProvider"
+            android:authorities="com.moataz.eventboard.DataUtil.EventsProvider"
+            android:exported="false"
+            android:multiprocess="true" >
+        </provider>
+
     </application>
+
+
 
 </manifest>
