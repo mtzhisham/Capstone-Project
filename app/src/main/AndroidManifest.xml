@@ -31,7 +31,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAyEq4rceAI0CI5RUXbCv4aBLhVCatynfU" />
+            android:value="@string/geo_api_key" />
 
         <service android:name="com.moataz.eventboard.Syncing.EventsIntentService" />
 

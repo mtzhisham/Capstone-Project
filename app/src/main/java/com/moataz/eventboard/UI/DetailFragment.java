@@ -69,7 +69,6 @@ public class DetailFragment extends Fragment {
 
         Glide.with(getContext())
                 .load(url)
-                .centerCrop()
                 .crossFade()
                 .placeholder(R.mipmap.ic_launcher)
                 .into(imageView);

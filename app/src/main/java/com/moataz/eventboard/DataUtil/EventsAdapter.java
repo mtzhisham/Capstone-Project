@@ -117,9 +117,7 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
 try {
     Glide.with(getContext())
             .load(event.getLogo().getOriginal().getUrl())
-            .centerCrop()
             .crossFade()
-            .diskCacheStrategy(DiskCacheStrategy.RESULT)
             .placeholder(R.mipmap.ic_launcher)
             .into(posterImageView);
 

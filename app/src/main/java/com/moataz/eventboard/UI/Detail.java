@@ -22,11 +22,11 @@ public class Detail extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-9732154099580096~2168335766");
+        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_App_ID));
 
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("092DD59E60E21DD764E8E9821379219E").build();
+                .addTestDevice(getResources().getString(R.string.test_device)).build();
         mAdView.loadAd(adRequest);
     }
 

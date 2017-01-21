@@ -10,9 +10,15 @@
     <string name="title_activity_detail">Detail</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-9732154099580096/5121802162</string>
+    <string name="admob_App_ID">ca-app-pub-9732154099580096~2168335766</string>
+    <string name="test_device">092DD59E60E21DD764E8E9821379219E</string>
+
+    <string name="geo_api_key">AIzaSyAyEq4rceAI0CI5RUXbCv4aBLhVCatynfU</string>
 
     <string name="transition_name_name">transition:NAME</string>
     <string name="transition_name_image">transition:Image</string>
     <string name="transition_name_date">transition:DATE</string>
+
+
 
 </resources>
