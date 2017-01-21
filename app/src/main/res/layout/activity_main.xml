@@ -19,8 +19,10 @@
             android:id="@+id/collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="256dp"
-            android:fitsSystemWindows="true"
-
+            android:fitsSystemWindows="false"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            android:elevation="4dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             >
 
@@ -29,8 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/concertjpg"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
+                android:fitsSystemWindows="false"
+                android:scaleType="fitXY"
                 app:layout_collapseMode="parallax" />
 
                 <android.support.v7.widget.Toolbar

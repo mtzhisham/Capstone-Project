@@ -41,18 +41,6 @@ FavFragment.OnFragmentInteractionListener, GoogleApiClient.OnConnectionFailedLis
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setHomeAsUpIndicator(R.mipmap.ic_launcher);
-//        actionBar.setDisplayShowTitleEnabled(false);
-//        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
