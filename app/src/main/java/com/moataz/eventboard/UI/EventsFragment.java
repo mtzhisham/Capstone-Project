@@ -12,7 +12,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,7 +60,7 @@ public class EventsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     int PLACE_PICKER_REQUEST = 1;
 
-
+     EventResponse eResponse;
     public static final String ACTION_RESP =
             "com.mamlambo.intent.action.MESSAGE_PROCESSED";
     // Constants
@@ -81,6 +83,7 @@ public class EventsFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     public View view;
     public RecyclerView rvContacts;
+    EventsAdapter adapter;
     private int mPage;
     List list;
 
@@ -241,9 +244,10 @@ public class EventsFragment extends Fragment {
 
 
         switch (item.getItemId()) {
-            case R.id.about:
+            case R.id.place:
                 pickLocation();
                 return true;
+            case R.id.about:
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -276,6 +280,8 @@ public class EventsFragment extends Fragment {
 
                 Toast.makeText(getContext(), toastMsg, Toast.LENGTH_LONG).show();
 
+                startService(address ,"1");
+
                 SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putFloat("lat", (float) lg.latitude);
@@ -305,18 +311,13 @@ public class EventsFragment extends Fragment {
         public void onReceive(final Context context, final Intent intent) {
             this.intentt = intent;
 
-
-
-
             handler.post(new Runnable() {
                 @Override
                 public void run() {
 
-                    final EventResponse text = intentt.getParcelableExtra("response");
-                    Log.d("response",text.events.get(1).getId() + "");
+                    eResponse = intentt.getParcelableExtra("response");
 
-
-                    EventsAdapter adapter = new EventsAdapter(context, text.events);
+                    adapter = new EventsAdapter(context, eResponse.events);
                     rvContacts = (RecyclerView)  view.findViewById(R.id.rvEvents);
                     // Attach the adapter to the recyclerview to populate items
                     rvContacts.setAdapter(adapter);
@@ -331,13 +332,29 @@ public class EventsFragment extends Fragment {
 
 
                             Intent intent1 = new Intent(getActivity(),Detail.class);
-                            intent1.putExtra("url",text.events.get(position).getLogo().getOriginal().getUrl());
-                            intent1.putExtra("name",text.events.get(position).getName().getText());
+//                            intent1.putExtra("url",eResponse.events.get(position).getLogo().getOriginal().getUrl());
+//                            intent1.putExtra("name",eResponse.events.get(position).getName().getText());
+                            intent1.putExtra("Event",eResponse.events.get(position));
 
-                            Log.d("response",text.events.get(position).getLogo().getOriginal().getUrl());
-                            Log.d("response",text.events.get(position).getName().getText());
 
-                            startActivity(intent1);
+                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                    // the context of the activity
+                                    getActivity(),
+
+                                    // For each shared element, add to this method a new Pair item,
+                                    // which contains the reference of the view we are transitioning *from*,
+                                    // and the value of the transitionName attribute
+                                    new Pair<View, String>(v.findViewById(R.id.imageView),
+                                            getString(R.string.transition_name_image))
+                                    ,
+                                    new Pair<View, String>(view.findViewById(R.id.event_name),
+                                            getString(R.string.transition_name_name)),
+                                    new Pair<View, String>(view.findViewById(R.id.event_id),
+                                            getString(R.string.transition_name_date))
+                            );
+
+
+                            startActivity(intent1,options.toBundle());
 
 
                         }

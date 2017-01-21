@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moataz.MultiDexApplication.eventboard.R;
+import com.moataz.eventboard.ParserUtil.Event;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -48,13 +50,22 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
         ImageView imageView = (ImageView) view.findViewById(R.id.photo);
-
+        TextView name_tv = (TextView) view.findViewById(R.id.event_name);
+        TextView date_tv = (TextView) view.findViewById(R.id.event_date);
+        TextView desc_tv = (TextView) view.findViewById(R.id.event_disc);
 
         Intent intent = getActivity().getIntent();
-        String url = intent.getStringExtra("url");
-         name = intent.getStringExtra("name");
+        Event event =  intent.getParcelableExtra("Event");
 
-        Log.d("detail",name);
+        String url = event.getLogo().getUrl();
+
+        name_tv.setText(event.getName().getText());
+        date_tv.setText(event.getStart().getLocal() + " to " +event.getEnd().getLocal());
+        desc_tv.setText(event.getDescription().getText());
+
+
+
+
 
         Glide.with(getContext())
                 .load(url)

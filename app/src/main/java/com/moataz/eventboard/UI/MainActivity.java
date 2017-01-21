@@ -41,6 +41,9 @@ FavFragment.OnFragmentInteractionListener, GoogleApiClient.OnConnectionFailedLis
         setContentView(R.layout.activity_main);
         Stetho.initializeWithDefaults(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)

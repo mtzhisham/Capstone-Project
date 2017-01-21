@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="com.moataz.eventboard.UI.DetailFragment"
-    tools:showIn="@layout/activity_detail">
+    tools:showIn="@layout/activity_detail"
+    android:transitionGroup="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -31,6 +32,8 @@
             >
             <ImageView
                 android:id="@+id/photo"
+                android:transitionName="@string/transition_name_image"
+                android:transitionGroup="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -44,6 +47,11 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/photo_background_protection" />
+
                 <LinearLayout
                     android:id="@+id/meta_bar"
                     android:layout_width="match_parent"
@@ -56,10 +64,12 @@
                     >
 
                     <TextView
-                        android:id="@+id/article_title"
+                        android:id="@+id/event_name"
                         style="?android:attr/textAppearanceLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:transitionName="@string/transition_name_name"
+                        android:transitionGroup="true"
                         android:text="test"
                         android:fontFamily="sans-serif-condensed"
                         android:textColor="@color/md_white_1000"
@@ -69,8 +79,10 @@
                         android:lineSpacingMultiplier="@fraction/detail_title_line_spacing_multiplier" />
 
                     <TextView
-                        android:id="@+id/article_byline"
+                        android:id="@+id/event_date"
                         android:text="test"
+                        android:transitionName="@string/transition_name_date"
+                        android:transitionGroup="true"
                         android:layout_weight="1"
                         style="?android:attr/textAppearanceSmall"
                         android:fontFamily="sans-serif-light"
@@ -88,7 +100,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 android:fitsSystemWindows="true"
                 android:layout_height="?attr/actionBarSize"
                 app:contentInsetStart="@dimen/margin_16dp"
@@ -121,7 +133,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
-                android:id="@+id/article_body"
+                android:id="@+id/event_disc"
                 android:fontFamily="sans-serif"
                 style="?android:attr/textAppearanceMedium"
                 android:layout_width="match_parent"

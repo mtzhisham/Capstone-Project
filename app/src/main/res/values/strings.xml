@@ -10,5 +10,9 @@
     <string name="title_activity_detail">Detail</string>
 
     <string name="banner_ad_unit_id">ca-app-pub-9732154099580096/5121802162</string>
-    ca-app-pub-9732154099580096/5121802162
+
+    <string name="transition_name_name">transition:NAME</string>
+    <string name="transition_name_image">transition:Image</string>
+    <string name="transition_name_date">transition:DATE</string>
+
 </resources>

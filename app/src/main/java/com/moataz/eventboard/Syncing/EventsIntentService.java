@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.moataz.MultiDexApplication.eventboard.BuildConfig;
 import com.moataz.eventboard.ParserUtil.EventResponse;
 
 import retrofit2.Call;
@@ -60,8 +61,7 @@ public class EventsIntentService extends IntentService {
         MyApiEndpointInterface apiService =
                 retrofit.create(MyApiEndpointInterface.class);
 
-
-        Call<EventResponse> call = apiService.getEvents("Bearer XWN6MIU4KRLP2ZTUGPBU",page, address);
+        Call<EventResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY,page, address);
         Log.d("EventBoard","" + call.request().url().toString());
         call.enqueue(new Callback<EventResponse>() {
             @Override

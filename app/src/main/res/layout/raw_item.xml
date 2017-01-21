@@ -7,7 +7,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 card_view:cardElevation="8dp"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    android:transitionGroup="true">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -19,7 +20,8 @@ card_view:cardElevation="8dp"
             android:id="@+id/imageView"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:transitionGroup="true"/>
 
         <LinearLayout
 
@@ -39,6 +41,7 @@ card_view:cardElevation="8dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="test"
+                android:transitionGroup="true"
                 />
             <TextView
                 android:id="@+id/event_id"
@@ -46,6 +49,7 @@ card_view:cardElevation="8dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="test"
+                android:transitionGroup="true"
                 />
 
         </LinearLayout>
