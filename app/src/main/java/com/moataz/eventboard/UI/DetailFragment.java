@@ -3,6 +3,7 @@ package com.moataz.eventboard.UI;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -22,7 +23,7 @@ import com.moataz.MultiDexApplication.eventboard.R;
  * A placeholder fragment containing a simple view.
  */
 public class DetailFragment extends Fragment {
-
+    Cursor mCursor;
     // The URL used to target the content provider
     static final Uri CONTENT_URL =
             Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
@@ -72,7 +73,17 @@ public class DetailFragment extends Fragment {
                 values.put("eDBID", name);
                 values.put("event", name);
                 resolver.insert(CONTENT_URL, values);
+                Log.d("URI",CONTENT_URL.toString());
 
+            }
+        });
+
+
+        Button button = (Button) view.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getMoviesFromDB();
             }
         });
 
@@ -82,6 +93,45 @@ public class DetailFragment extends Fragment {
         return view;
     }
 
+
+    public void getMoviesFromDB(){
+
+        // Projection contains the columns we want
+        String[] projection = new String[]{"id", "eDBID","event"};
+
+        // Pass the URL, projection and I'll cover the other options below
+        Cursor cursor = resolver.query(CONTENT_URL, projection, null, null, null);
+
+
+
+        // Cycle through and display every row of data
+        if(cursor.moveToFirst()){
+
+            do{
+
+                String movie = cursor.getString(cursor.getColumnIndex("event"));
+                String idfromdb = cursor.getString(cursor.getColumnIndex("eDBID"));
+
+
+                try {
+
+                    Log.d("fromDB", movie);
+
+
+                } catch (Exception e)
+                {e.printStackTrace();}
+
+
+
+            }while (cursor.moveToNext());
+
+        }
+
+        cursor.close();
+
+
+
+    }
 
 
 

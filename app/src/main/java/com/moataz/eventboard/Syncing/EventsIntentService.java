@@ -1,6 +1,7 @@
 package com.moataz.eventboard.Syncing;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.util.Log;
@@ -24,6 +25,9 @@ public class EventsIntentService extends IntentService {
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
     Intent broadcastIntent;
+    private Context mContext;
+    public static final String ACTION_DATA_UPDATED = "com.moataz.ACTION_DATA_UPDATED";
+
 
     public static final String ACTION_RESP =
             "com.mamlambo.intent.action.MESSAGE_PROCESSED";
@@ -34,6 +38,10 @@ public class EventsIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        if (mContext == null){
+            mContext = this;
+        }
 
         String address = intent.getStringExtra(ADDRESS);
         String page = intent.getStringExtra(PAGE);
@@ -71,6 +79,10 @@ public class EventsIntentService extends IntentService {
                 broadcastIntent.putExtra("response",response.body());
                 sendBroadcast(broadcastIntent);
 
+
+
+                Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+                mContext.sendBroadcast(dataUpdatedIntent);
             }
 
             @Override

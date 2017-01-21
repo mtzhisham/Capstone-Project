@@ -3,11 +3,9 @@
     package="com.moataz.MultiDexApplication.eventboard">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -53,6 +51,25 @@
             android:exported="false"
             android:multiprocess="true" >
         </provider>
+
+
+        <receiver
+            android:icon="@drawable/common_google_signin_btn_icon_dark_normal"
+            android:label="Example Widget"
+            android:name="com.moataz.eventboard.widget.WidgetProvider">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.moataz.ACTION_DATA_UPDATED"/>
+            </intent-filter>
+
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider"/>
+        </receiver>
+
+
+        <service android:name="com.moataz.eventboard.widget.EventWidgetRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>
 

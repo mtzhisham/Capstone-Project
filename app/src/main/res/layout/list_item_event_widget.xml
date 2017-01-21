@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:id="@+id/list_item_event_widget"
+    android:background="#FAFAFA"
+
+
+    >
+  <TextView
+      android:id="@+id/event_id"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="start|center_vertical"
+      tools:text="stuff"
+      android:layoutDirection="locale"
+      android:textDirection="locale"
+      android:textColor="@color/md_black_1000"
+      />
+
+</LinearLayout>
+

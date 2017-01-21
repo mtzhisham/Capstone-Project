@@ -147,7 +147,7 @@ public class EventsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_events, container, false);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+//        TextView tvTitle = (TextView) view.findViewById(R.id.tv);
 //        tvTitle.setText("Fragment #" + mPage);
 
         rvContacts = (RecyclerView) view.findViewById(R.id.rvEvents);
@@ -317,7 +317,7 @@ public class EventsFragment extends Fragment {
 
 
                     EventsAdapter adapter = new EventsAdapter(context, text.events);
-                    rvContacts = (RecyclerView)  view.findViewById(R.id.rvContacts);
+                    rvContacts = (RecyclerView)  view.findViewById(R.id.rvEvents);
                     // Attach the adapter to the recyclerview to populate items
                     rvContacts.setAdapter(adapter);
                     // Set layout manager to position the items

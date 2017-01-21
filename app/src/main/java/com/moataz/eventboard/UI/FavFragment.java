@@ -67,7 +67,7 @@ public class FavFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_fav, container, false);
-        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+//        TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
 //        tvTitle.setText("Fragment #" + mPage);
         return view;
     }

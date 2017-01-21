@@ -27,7 +27,7 @@ public class EventsProvider extends ContentProvider {
     // Assigned to a content provider so any application can access it
     // cpcontacts is the virtual directory in the provider
     static final String URL = "content://" + PROVIDER_NAME + "/cpevents";
-    static final Uri CONTENT_URL = Uri.parse(URL);
+    public static final Uri CONTENT_URL = Uri.parse(URL);
 
     static final String id = "id";
     static final String event = "event";
@@ -42,7 +42,8 @@ public class EventsProvider extends ContentProvider {
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER_NAME, "cpmovies", uriCode);
+        uriMatcher.addURI(PROVIDER_NAME, "cpevents" +
+                "", uriCode);
     }
 
     private SQLiteDatabase sqlDB;
@@ -101,7 +102,7 @@ public class EventsProvider extends ContentProvider {
 
             // vnd.android.cursor.dir/cpcontacts states that we expect multiple pieces of data
             case uriCode:
-                return "vnd.android.cursor.dir/cpmovies";
+                return "vnd.android.cursor.dir/cpevents";
 
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
