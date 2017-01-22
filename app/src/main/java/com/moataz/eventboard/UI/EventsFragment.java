@@ -1,10 +1,7 @@
 package com.moataz.eventboard.UI;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -12,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
@@ -24,22 +22,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.moataz.MultiDexApplication.eventboard.R;
 import com.moataz.eventboard.DataUtil.EventsAdapter;
+import com.moataz.eventboard.ParserUtil.Event;
 import com.moataz.eventboard.ParserUtil.EventResponse;
 import com.moataz.eventboard.Syncing.EventsIntentService;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,28 +60,21 @@ public class EventsFragment extends Fragment {
 
      EventResponse eResponse;
     public static final String ACTION_RESP =
-            "com.mamlambo.intent.action.MESSAGE_PROCESSED";
-    // Constants
-    // The authority for the sync adapter's content provider
-    public static final String AUTHORITY = "com.moataz.eventboard.Syncing.EventsProvider";
-    // An account type, in the form of a domain name
-    public static final String ACCOUNT_TYPE = "com.moataz.eventboard";
-    // The account name
-    public static final String ACCOUNT = "default_account";
-    // Instance fields
-    Account mAccount;
+            "com.moataz.intent.action.EVENTS_PROCESSED";
 
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
+    private static Integer page = 1;
 
     private static IntentFilter filter;
 
-
-
+    List<Event> events;
+    private static boolean Firsttime = true;
     public static final String ARG_PAGE = "ARG_PAGE";
     public View view;
-    public RecyclerView rvContacts;
+    public RecyclerView rvEvents;
     EventsAdapter adapter;
+    SharedPreferences sharedPref;
     private int mPage;
     List list;
 
@@ -144,6 +135,8 @@ public class EventsFragment extends Fragment {
         super.onPause();
         getActivity().unregisterReceiver(receiver);
     }
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,15 +145,74 @@ public class EventsFragment extends Fragment {
         view =  inflater.inflate(R.layout.fragment_events, container, false);
 //        TextView tvTitle = (TextView) view.findViewById(R.id.tv);
 //        tvTitle.setText("Fragment #" + mPage);
+        events = new ArrayList<Event>();
+        adapter = new EventsAdapter(context, events);
+        rvEvents = (RecyclerView)  view.findViewById(R.id.rvEvents);
+        // Attach the adapter to the recyclerview to populate items
+        rvEvents.setAdapter(adapter);
 
-        rvContacts = (RecyclerView) view.findViewById(R.id.rvEvents);
-        Context context = getActivity();
-        SharedPreferences sharedPref = context.getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        rvEvents = (RecyclerView) view.findViewById(R.id.rvEvents);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        rvEvents.setLayoutManager(linearLayoutManager);
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
 
-            startService("Alexandria, Egypt","1");
+
+
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+
+               if(page < mPage) {
+                   Log.d("scroll", "loaaaaad");
+
+                   loadNextDataFromApi(page);
+               }
+
+               else{
+                   Snackbar snackbar = Snackbar
+                           .make(view, "No More Events", Snackbar.LENGTH_LONG);
+
+                   snackbar.show();
+               }
+            }
+        };
+
+
+        rvEvents.addOnScrollListener(scrollListener);
+
+
+       sharedPref =getActivity().getPreferences(Context.MODE_PRIVATE);
+
+
+            startService(sharedPref.getString("place","NY, USA"), "1");
+
+        Float lat = sharedPref.getFloat("lat",5);
+        Log.d("from shared",lat.toString());
 
         return view;
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+
+
+
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
+
+        Integer page = offset+1;
+
+        startService(sharedPref.getString("place","NY, USA"), page.toString());
+
+
+    }
+
+
+    public void addData(){
+
     }
 
 
@@ -280,13 +332,18 @@ public class EventsFragment extends Fragment {
 
                 Toast.makeText(getContext(), toastMsg, Toast.LENGTH_LONG).show();
 
+                scrollListener.resetState();
+                Firsttime = true;
                 startService(address ,"1");
 
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putFloat("lat", (float) lg.latitude);
                 editor.putFloat("long", (float) lg.longitude);
+                editor.putString("place",address);
                 editor.apply();
+
 
 
 
@@ -317,13 +374,18 @@ public class EventsFragment extends Fragment {
 
                     eResponse = intentt.getParcelableExtra("response");
 
-                    adapter = new EventsAdapter(context, eResponse.events);
-                    rvContacts = (RecyclerView)  view.findViewById(R.id.rvEvents);
-                    // Attach the adapter to the recyclerview to populate items
-                    rvContacts.setAdapter(adapter);
-                    // Set layout manager to position the items
-                   rvContacts.setLayoutManager(new LinearLayoutManager(context));
-                    // That's all!
+
+                    if (eResponse != null){
+                        mPage = eResponse.getPagination().getPageCount();
+                        Log.d("adapter", eResponse.getPagination().getPageCount().toString());
+
+
+
+                    if(Firsttime){
+                        events.clear();
+                        events.addAll(eResponse.events);
+                        Firsttime = false;
+
                     adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
                         @Override
                         public void onItemClick(int position, View v) {
@@ -334,7 +396,7 @@ public class EventsFragment extends Fragment {
                             Intent intent1 = new Intent(getActivity(),Detail.class);
 //                            intent1.putExtra("url",eResponse.events.get(position).getLogo().getOriginal().getUrl());
 //                            intent1.putExtra("name",eResponse.events.get(position).getName().getText());
-                            intent1.putExtra("Event",eResponse.events.get(position));
+                            intent1.putExtra("Event",events.get(position));
 
 
                             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -365,14 +427,37 @@ public class EventsFragment extends Fragment {
                         }
                     });
 
+                } else{
+
+                        events.addAll(eResponse.events);
+                        int curSize = adapter.getItemCount();
+
+
+                        adapter.notifyItemRangeInserted(curSize, events.size() - 1);
+
+
+                    }
+
+
+
+
                 }
+
+                    else{
+                        Snackbar snackbar = Snackbar
+                                .make(view, "No Events", Snackbar.LENGTH_LONG);
+
+                        snackbar.show();
+                    }
+                }
+
             });
 
 
 
 
 
-
+            adapter.notifyDataSetChanged();
 
 
         }

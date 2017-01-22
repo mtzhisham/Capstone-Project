@@ -14,7 +14,10 @@
         android:id="@+id/rvEvents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="16dp"/>
+        android:elevation="16dp"
+        android:scrollbars="vertical"
+        android:isScrollContainer="true"
+        />
 
 
 

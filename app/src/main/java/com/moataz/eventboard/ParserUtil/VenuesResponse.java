@@ -1,6 +1,9 @@
 package com.moataz.eventboard.ParserUtil;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by moataz on 22/01/17.
  */
 
-public class VenuesResponse {
+public class VenuesResponse implements Parcelable {
 
 
     @SerializedName("address")
@@ -29,6 +32,27 @@ public class VenuesResponse {
     @SerializedName("longitude")
     @Expose
     private String longitude;
+
+    protected VenuesResponse(Parcel in) {
+        address = in.readParcelable(Address.class.getClassLoader());
+        resourceUri = in.readString();
+        id = in.readString();
+        name = in.readString();
+        latitude = in.readString();
+        longitude = in.readString();
+    }
+
+    public static final Creator<VenuesResponse> CREATOR = new Creator<VenuesResponse>() {
+        @Override
+        public VenuesResponse createFromParcel(Parcel in) {
+            return new VenuesResponse(in);
+        }
+
+        @Override
+        public VenuesResponse[] newArray(int size) {
+            return new VenuesResponse[size];
+        }
+    };
 
     public Address getAddress() {
         return address;
@@ -76,5 +100,20 @@ public class VenuesResponse {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(address,i);
+        parcel.writeString(resourceUri);
+        parcel.writeString(id);
+        parcel.writeString(name);
+        parcel.writeString(latitude);
+        parcel.writeString(longitude);
     }
 }

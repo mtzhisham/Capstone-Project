@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.moataz.MultiDexApplication.eventboard.BuildConfig;
@@ -31,7 +32,10 @@ public class EventsIntentService extends IntentService {
 
 
     public static final String ACTION_RESP =
-            "com.mamlambo.intent.action.MESSAGE_PROCESSED";
+            "com.moataz.intent.action.EVENTS_PROCESSED";
+
+    public static final String ACTION_FAILED =
+            "com.moataz.intent.action.EVENTS_NOTPROCESSED";
 
     public EventsIntentService(){
         super("EventsIntentService");
@@ -69,15 +73,30 @@ public class EventsIntentService extends IntentService {
                 int statusCode = response.code();
                 Log.d("EventBoard","" + statusCode);
 
-                Log.d("EventBoard", " size: "+ response.body().events.size());
-
-                Log.d("EventBoard", response.body().events.get(1).getName().getText());
-
-                Log.d("EventBoard", "Hello from intentservice");
+                if (response.body().events.size() !=0){
 
 
-                broadcastIntent.putExtra("response",response.body());
-                sendBroadcast(broadcastIntent);
+
+                    Log.d("EventBoard", " size: "+ response.body().events.size());
+
+//                Log.d("EventBoard", response.body().events.get(1).getName().getText());
+
+                    Log.d("EventBoard", "Hello from intentservice");
+
+
+                    broadcastIntent.putExtra("response",response.body());
+                    sendBroadcast(broadcastIntent);
+
+                } else {
+
+                    broadcastIntent.putExtra("response","FAIL");
+                    sendBroadcast(broadcastIntent);
+
+
+
+                }
+
+
 
 
 

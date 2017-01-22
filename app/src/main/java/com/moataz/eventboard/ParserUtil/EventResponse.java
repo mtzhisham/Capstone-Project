@@ -3,8 +3,8 @@ package com.moataz.eventboard.ParserUtil;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,18 @@ import java.util.List;
  * Created by moataz on 1/6/2017.
  */
 public class EventResponse implements Parcelable {
+
+    @SerializedName("pagination")
+    @Expose
+    private Pagination pagination;
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
+    }
 
    public List<Event> events;
 
@@ -23,11 +35,13 @@ public class EventResponse implements Parcelable {
 
     protected EventResponse(Parcel in) {
         events = in.createTypedArrayList(Event.CREATOR);
+        pagination = in.readParcelable(Pagination.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(events);
+        dest.writeParcelable(pagination,flags);
     }
 
     @Override

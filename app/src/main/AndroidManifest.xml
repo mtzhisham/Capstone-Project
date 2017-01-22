@@ -13,6 +13,8 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -34,6 +36,7 @@
             android:value="@string/geo_api_key" />
 
         <service android:name="com.moataz.eventboard.Syncing.EventsIntentService" />
+        <service android:name="com.moataz.eventboard.Syncing.VeunesIntentService" />
 
         <activity
             android:name="com.moataz.eventboard.UI.Detail"
