@@ -13,32 +13,29 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
+
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.util.Pair;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import com.bumptech.glide.Glide;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
 import com.moataz.MultiDexApplication.eventboard.R;
-import com.moataz.eventboard.DataUtil.EventsAdapter;
+
 import com.moataz.eventboard.ParserUtil.Event;
 import com.moataz.eventboard.ParserUtil.VenuesResponse;
-import com.moataz.eventboard.Syncing.EventsIntentService;
+
 import com.moataz.eventboard.Syncing.VeunesIntentService;
 
 import icepick.Icepick;
@@ -48,8 +45,7 @@ import icepick.State;
  * A placeholder fragment containing a simple view.
  */
 public class DetailFragment extends Fragment {
-    Cursor mCursor;
-    // The URL used to target the content provider
+
 
 
     public static final String ACTION_RESP =
@@ -77,9 +73,6 @@ public class DetailFragment extends Fragment {
     public static final String VID = "VID";
     ContentValues values;
     Context mContext;
-    Intent myShareIntent;
-    ShareActionProvider myShareActionProvider;
-
     private static IntentFilter filter;
     ContentResolver resolver;
     String name;
@@ -149,7 +142,7 @@ public class DetailFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         if (event == null){
             event =  intent.getParcelableExtra("Event");
-            Log.d("Details","new events");
+
         }
 
 
@@ -159,9 +152,6 @@ public class DetailFragment extends Fragment {
         date_tv.setText(event.getStart().getLocal() + " to " +event.getEnd().getLocal());
         desc_tv.setText(event.getDescription().getText());
         eventID = event.getId();
-//        Log.d("EventDetail_URL",event.getUrl());
-//        Log.d("EventDetail_VenueID",event.getVenueId());
-//        Log.d("EventDetail_URI",event.getResourceUri());
 
         Glide.with(getContext())
                 .load(url)
@@ -180,7 +170,6 @@ public class DetailFragment extends Fragment {
         menu.addMenuButton(programFab1);
 
         if(!started){
-            Log.d("started","in");
             startService(event.getVenueId());
             new lookOnlyEvent().execute(eventID);
             started =true;
@@ -200,11 +189,7 @@ public class DetailFragment extends Fragment {
                 values.put("eDBID", event.getId());
                 values.put("event", gson.toJson(event));
 
-//                new AddEvent().execute(values);
                 new lookNCREvent().execute(eventID);
-
-
-
 
             }
         });
@@ -218,8 +203,6 @@ public class DetailFragment extends Fragment {
         programFab2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//               Boolean state = new lookupEvent().execute(eventID);
-
 
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
@@ -241,12 +224,6 @@ public class DetailFragment extends Fragment {
         }
 
 
-
-
-
-
-
-
         return view;
     }
 
@@ -256,12 +233,7 @@ public class DetailFragment extends Fragment {
         getActivity().startService(msgIntent);
     }
 
-
-
-
-
     public class VenueResponseReciver extends BroadcastReceiver {
-
 
 
         Intent intentt;
@@ -270,7 +242,6 @@ public class DetailFragment extends Fragment {
         public VenueResponseReciver(Handler handler) {
             this.handler = handler;
         }
-
 
 
         @Override
@@ -282,8 +253,6 @@ public class DetailFragment extends Fragment {
                 public void run() {
 
                     vResponse = intentt.getParcelableExtra("response");
-
-                    Log.d("fromFragment",vResponse.getName());
 
                     v_name = vResponse.getName();
 
@@ -307,7 +276,6 @@ public class DetailFragment extends Fragment {
         protected Boolean doInBackground(ContentValues... params) {
 
 
-            Log.d("stuff",params[0].get("eDBID").toString());
             return resolver.insert(CONTENT_URL, params[0]) != null;
 
 
@@ -320,7 +288,7 @@ public class DetailFragment extends Fragment {
 
                 Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
                 mContext.sendBroadcast(dataUpdatedIntent);
-               //result
+
             }
 
         }
@@ -331,7 +299,6 @@ public class DetailFragment extends Fragment {
         @Override
         protected Boolean doInBackground(String... params) {
 
-            Log.d("stuff",params[0]);
             return resolver.delete(CONTENT_URL, "eDBID = ? ", new String[]{params[0]}) == 1;
         }
 
@@ -343,7 +310,6 @@ public class DetailFragment extends Fragment {
                 Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
                 mContext.sendBroadcast(dataUpdatedIntent);
 
-              //result
             }
 
         }
@@ -389,10 +355,7 @@ public class DetailFragment extends Fragment {
 
             if (result){
 
-                Snackbar snackbar = Snackbar
-                        .make(view, "found it", Snackbar.LENGTH_LONG);
 
-                snackbar.show();
                 new DeleteEvent().execute(eventID);
 
                 programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
@@ -422,7 +385,6 @@ public class DetailFragment extends Fragment {
 
             if (result){
 
-
                 programFab1.setImageResource(R.drawable.ic_star_white_24dp);
                 there = true;
 
@@ -435,7 +397,6 @@ public class DetailFragment extends Fragment {
 
         }
     }
-
 
 
 }

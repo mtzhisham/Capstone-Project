@@ -69,6 +69,8 @@ public class EventsFragment extends Fragment {
 
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
+    public static final String LAT = "LAT";
+    public static final String LOG = "LOG";
     @State
     public Integer page = 1;
 
@@ -104,8 +106,6 @@ public class EventsFragment extends Fragment {
     public EventsFragment() {
         // Required empty public constructor
     }
-
-
 
 
 
@@ -200,7 +200,6 @@ if (savedInstanceState != null) {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
 
                if(page < mPage) {
-                   Log.d("scroll", "loaaaaad");
 
                    loadNextDataFromApi(page);
                }
@@ -220,15 +219,14 @@ if (savedInstanceState != null) {
 
        sharedPref =getActivity().getPreferences(Context.MODE_PRIVATE);
 
-
-        if (init) {
-            startService(sharedPref.getString("place", "NY, USA"), "1");
-        init = false;
-        }
         Float lat = sharedPref.getFloat("lat",5);
         Float log = sharedPref.getFloat("log",5);
-        Log.d("from shared lat",lat.toString());
-        Log.d("from shared log",log.toString());
+
+        if (init) {
+            startService(sharedPref.getString("place", "NY, USA"), "1",lat.toString(),log.toString());
+        init = false;
+        }
+
 
         return view;
     }
@@ -246,18 +244,23 @@ if (savedInstanceState != null) {
         //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
 
        page = offset+1;
+        Float lat = sharedPref.getFloat("lat",5);
+        Float log = sharedPref.getFloat("log",5);
 
-        startService(sharedPref.getString("place","NY, USA"), page.toString());
+        startService(sharedPref.getString("place","NY, USA"), lat.toString(), log.toString(), page.toString());
 
 
     }
 
 
 
-    public void startService(String adress, String page){
+    public void startService(String address, String page, String lat, String log){
         Intent msgIntent = new Intent(getContext(), EventsIntentService.class);
-        msgIntent.putExtra(ADDRESS, adress);
+        msgIntent.putExtra(ADDRESS, address);
         msgIntent.putExtra(PAGE, page);
+        msgIntent.putExtra("lat", page);
+        msgIntent.putExtra("log", page);
+
 
         getActivity().startService(msgIntent);
     }
@@ -305,15 +308,6 @@ if (savedInstanceState != null) {
         void onFragmentInteraction(Uri uri);
     }
 
-
-    public interface MyApiEndpointInterface {
-        // Request method and URL specified in the annotation
-        // Callback for the parsed response is the last parameter
-
-        @GET("events/search/")
-        Call<EventResponse> getEvents(@Header("Authorization") String apiKey, @Query("page") String page,
-                                      @Query("location.address") String adress);
-    }
 
     @Override
     public void setHasOptionsMenu(boolean hasMenu) {
@@ -366,13 +360,15 @@ if (savedInstanceState != null) {
                 String address = place.getAddress().toString();
                 LatLngBounds latLng = PlacePicker.getLatLngBounds(data);
                 LatLng lg = latLng.getCenter();
-                String toastMsg = String.format("Place: %s %s", lg.latitude ,lg.longitude);
 
-                Toast.makeText(getContext(), toastMsg, Toast.LENGTH_LONG).show();
+
+
 
                 scrollListener.resetState();
                 Firsttime = true;
-                startService(address ,"1");
+                Double lat = lg.latitude;
+                Double log = lg.longitude;
+                startService(address,lat.toString(), log.toString(),"1");
 
 
 
@@ -428,14 +424,10 @@ if (savedInstanceState != null) {
                         @Override
                         public void onItemClick(int position, View v) {
                             Toast.makeText(context," "+ position, Toast.LENGTH_LONG).show();
-                            Log.d("adapter",position+"");
-
 
                             Intent intent1 = new Intent(getActivity(),Detail.class);
-//                            intent1.putExtra("url",eResponse.events.get(position).getLogo().getOriginal().getUrl());
-//                            intent1.putExtra("name",eResponse.events.get(position).getName().getText());
-                            intent1.putExtra("Event",events.get(position));
 
+                            intent1.putExtra("Event",events.get(position));
 
 
                             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(

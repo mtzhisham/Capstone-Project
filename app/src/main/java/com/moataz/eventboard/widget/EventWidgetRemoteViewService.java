@@ -24,11 +24,6 @@ import com.moataz.eventboard.ParserUtil.Event;
  */
 
 
-/*
-* thanks to https://github.com/RnzTx/StockHawk for clearing up how to deal with a content provider
-* created by Schematic and maintain a cursor to retrieve DB data
-*
-* */
 
 public class EventWidgetRemoteViewService extends RemoteViewsService {
 
@@ -69,8 +64,6 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            // update Cursor when dataset is changed eg. stock added / removed
-            // refer http://stackoverflow.com/a/16076336
 
 
             if (mCursor!=null)
@@ -95,15 +88,12 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
             try{
                 mCursor.moveToPosition(position);
-                int priceChangeColorId;
-
-                // get Stock Quote information
 
 
                 Gson gson = new Gson();
                 Event event = gson.fromJson(mCursor.getString(mCursor.getColumnIndex("event")), Event.class);
 
-                // create List Item for Widget ListView
+
                 RemoteViews listItemRemoteView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_event_widget);
                 listItemRemoteView.setTextViewText(R.id.event_name,event.getName().getText());
                 listItemRemoteView.setTextViewText(R.id.event_date,event.getStart().getLocal());
@@ -115,7 +105,7 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
 
                 // set Onclick Item Intent
                 Intent onClickItemIntent = new Intent();
-                //sending the sym required for graph activity to start
+
                 onClickItemIntent.putExtra("Event", event);
                 listItemRemoteView.setOnClickFillInIntent(R.id.list_item_event_widget,onClickItemIntent);
                 return listItemRemoteView;

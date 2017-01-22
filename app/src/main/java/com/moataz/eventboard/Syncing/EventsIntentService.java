@@ -3,8 +3,7 @@ package com.moataz.eventboard.Syncing;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
-import android.support.design.widget.Snackbar;
+
 import android.util.Log;
 
 import com.moataz.MultiDexApplication.eventboard.BuildConfig;
@@ -26,6 +25,8 @@ public class EventsIntentService extends IntentService {
 
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
+    public static final String LAT = "LAT";
+    public static final String LOG = "LOG";
     Intent broadcastIntent;
     private Context mContext;
 
@@ -49,6 +50,8 @@ public class EventsIntentService extends IntentService {
 
         String address = intent.getStringExtra(ADDRESS);
         String page = intent.getStringExtra(PAGE);
+        String lat = intent.getStringExtra(LAT);
+        String log = intent.getStringExtra(LOG);
 
         broadcastIntent = new Intent();
         broadcastIntent.setAction(ACTION_RESP);
@@ -64,24 +67,14 @@ public class EventsIntentService extends IntentService {
         MyApiEndpointInterface apiService =
                 retrofit.create(MyApiEndpointInterface.class);
 
-        Call<EventResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY,page, address);
-        Log.d("EventBoard","" + call.request().url().toString());
+        Call<EventResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY,page, address, lat, log);
+
         call.enqueue(new Callback<EventResponse>() {
             @Override
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
                 int statusCode = response.code();
-                Log.d("EventBoard","" + statusCode);
 
                 if (response.body().events.size() !=0){
-
-
-
-                    Log.d("EventBoard", " size: "+ response.body().events.size());
-
-//                Log.d("EventBoard", response.body().events.get(1).getName().getText());
-
-                    Log.d("EventBoard", "Hello from intentservice");
-
 
                     broadcastIntent.putExtra("response",response.body());
                     sendBroadcast(broadcastIntent);
@@ -92,14 +85,13 @@ public class EventsIntentService extends IntentService {
                     sendBroadcast(broadcastIntent);
 
 
-
                 }
 
             }
 
             @Override
             public void onFailure(Call<EventResponse> call, Throwable t) {
-                Log.d("EventBoard",t.getMessage());
+
             }
         });
 
@@ -117,6 +109,6 @@ public class EventsIntentService extends IntentService {
 
         @GET("events/search/")
         Call<EventResponse> getEvents(@Header("Authorization") String apiKey, @Query("page") String page,
-                                      @Query("location.address") String adress);
+                                      @Query("location.address") String address,@Query("location.latitude") String lat,@Query("location.longitude") String log);
     }
 }

@@ -17,7 +17,7 @@ import com.moataz.eventboard.ParserUtil.Event;
 /**
  * Created by moataz on 22/01/17.
  */
-public class CustomCContactAdapter  extends RecyclerView.Adapter<CustomCContactAdapter.ViewHolder> {
+public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapter.ViewHolder> {
     Cursor cursor;
 
     Context mContext;
@@ -25,7 +25,7 @@ public class CustomCContactAdapter  extends RecyclerView.Adapter<CustomCContactA
 
     private static ClickListener clickListener;
 
-    public CustomCContactAdapter  (Context context, Cursor cursor) {
+    public CustomCEventAdapter(Context context, Cursor cursor) {
         mContext = context;
         this.cursor = cursor;
         inflater = (LayoutInflater) mContext
@@ -72,21 +72,8 @@ public class CustomCContactAdapter  extends RecyclerView.Adapter<CustomCContactA
     }
 
 
-//    @Override
-//    public CustomCContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        Context context = parent.getContext();
-//        LayoutInflater inflater = LayoutInflater.from(context);
-//
-//        // Inflate the custom layout
-//        View eventsView = inflater.inflate(R.layout.raw_item, parent, false);
-//
-//        // Return a new holder instance
-//        ViewHolder viewHolder = new ViewHolder(eventsView);
-//        return viewHolder;
-//    }
-
     public void setOnItemClickListener(ClickListener clickListener) {
-        CustomCContactAdapter.clickListener = clickListener;
+        CustomCEventAdapter.clickListener = clickListener;
     }
 
     public interface ClickListener {
@@ -156,30 +143,4 @@ public class CustomCContactAdapter  extends RecyclerView.Adapter<CustomCContactA
     }
 
 
-
-//
-//    @Override
-//    public int getCount() {
-//        return cursor.getCount();
-//    }
-//
-//    @Override
-//    public Object getItem(int i) {
-//        return null;
-//    }
-//
-//    @Override
-//    public long getItemId(int i) {
-//        return 0;
-//    }
-//
-//    @Override
-//    public View getView(int i, View view, ViewGroup viewGroup) {
-//
-//        cursor.moveToPosition(i);
-//
-//        return null;
-//
-//
-//    }
 }

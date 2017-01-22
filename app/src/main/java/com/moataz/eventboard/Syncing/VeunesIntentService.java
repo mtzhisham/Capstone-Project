@@ -61,15 +61,10 @@ public class VeunesIntentService extends IntentService {
                 retrofit.create(MyApiEndpointInterface.class);
 
         Call<VenuesResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY, vid );
-        Log.d("EventBoard","" + call.request().url().toString());
         call.enqueue(new Callback<VenuesResponse>() {
             @Override
             public void onResponse(Call<VenuesResponse> call, Response<VenuesResponse> response) {
                 int statusCode = response.code();
-                Log.d("EventBoard","" + statusCode);
-
-                Log.d("EventBoard", " size: "+ response.body().getName());
-
 
                 broadcastIntent.putExtra("response",response.body());
                 sendBroadcast(broadcastIntent);

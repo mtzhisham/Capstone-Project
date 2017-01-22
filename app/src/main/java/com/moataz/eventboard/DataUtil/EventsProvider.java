@@ -24,8 +24,7 @@ public class EventsProvider extends ContentProvider {
     // The Java namespace for the Content Provider
     static final String PROVIDER_NAME = "com.moataz.eventboard.DataUtil.EventsProvider";
 
-    // Assigned to a content provider so any application can access it
-    // cpcontacts is the virtual directory in the provider
+
     static final String URL = "content://" + PROVIDER_NAME + "/cpevents";
     public static final Uri CONTENT_URL = Uri.parse(URL);
 
@@ -100,7 +99,7 @@ public class EventsProvider extends ContentProvider {
         // Used to match uris with Content Providers
         switch (uriMatcher.match(uri)) {
 
-            // vnd.android.cursor.dir/cpcontacts states that we expect multiple pieces of data
+
             case uriCode:
                 return "vnd.android.cursor.dir/cpevents";
 

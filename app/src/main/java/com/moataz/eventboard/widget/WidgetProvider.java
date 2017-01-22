@@ -25,7 +25,7 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final String LOG_TAG = WidgetProvider.class.getSimpleName();
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // update all StockWidgets
+        // update all widgets
         for (int widgetId: appWidgetIds){
             Intent intent = new Intent(context, EventWidgetRemoteViewService.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,widgetId);
@@ -34,10 +34,10 @@ public class WidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(),R.layout.collection_widget_layout);
             views.setRemoteAdapter(R.id.widgetCollectionList,intent);
 
-            // Open Graph on List Item click
-            Intent intentStockGraph = new Intent(context, Detail.class);
+
+            Intent intentEventDetail = new Intent(context, Detail.class);
             PendingIntent pendingIntent = TaskStackBuilder.create(context)
-                    .addNextIntentWithParentStack(intentStockGraph)
+                    .addNextIntentWithParentStack(intentEventDetail)
                     .getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widgetCollectionList,pendingIntent);
 

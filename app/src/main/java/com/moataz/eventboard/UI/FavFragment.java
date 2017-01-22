@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 
@@ -23,13 +21,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.moataz.MultiDexApplication.eventboard.R;
-import com.moataz.eventboard.DataUtil.CustomCContactAdapter;
-import com.moataz.eventboard.DataUtil.EventsAdapter;
+import com.moataz.eventboard.DataUtil.CustomCEventAdapter;
 import com.moataz.eventboard.ParserUtil.Event;
 
 import java.util.ArrayList;
@@ -67,7 +63,7 @@ public class FavFragment extends Fragment  implements
     // If non-null, this is the current filter the user has provided.
     String mCurFilter;
     List<Event> events;
-    CustomCContactAdapter mAdapter;
+    CustomCEventAdapter mAdapter;
     public RecyclerView rvEvents;
     private OnFragmentInteractionListener mListener;
 
@@ -170,8 +166,8 @@ public class FavFragment extends Fragment  implements
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         data.moveToFirst();
-        mAdapter = new CustomCContactAdapter(context,data);
-        mAdapter.setOnItemClickListener(new CustomCContactAdapter.ClickListener() {
+        mAdapter = new CustomCEventAdapter(context,data);
+        mAdapter.setOnItemClickListener(new CustomCEventAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Toast.makeText(context," "+ position, Toast.LENGTH_LONG).show();
