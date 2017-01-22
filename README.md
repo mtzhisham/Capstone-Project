@@ -1,3 +1,7 @@
-Udacity Capstone project 
+# Udacity Ansroid Developer Nanodegree Capstone project 
 
-to use, place your Eventbrite API key in the gradle.properties 
+## EventBoard
+
+### EventBoard is an event viewing app that uses the Eventbrite API
+
+## to use, place your Eventbrite API key in the ```gradle.properties```
