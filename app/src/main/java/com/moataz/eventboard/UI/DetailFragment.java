@@ -63,9 +63,9 @@ public class DetailFragment extends Fragment {
         date_tv.setText(event.getStart().getLocal() + " to " +event.getEnd().getLocal());
         desc_tv.setText(event.getDescription().getText());
 
-
-
-
+        Log.d("EventDetail_URL",event.getUrl());
+        Log.d("EventDetail_VenueID",event.getVenueId());
+        Log.d("EventDetail_URI",event.getResourceUri());
 
         Glide.with(getContext())
                 .load(url)
