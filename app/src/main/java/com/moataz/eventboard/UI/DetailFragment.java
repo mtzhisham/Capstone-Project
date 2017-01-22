@@ -9,8 +9,10 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -43,11 +45,13 @@ import com.moataz.eventboard.Syncing.VeunesIntentService;
 public class DetailFragment extends Fragment {
     Cursor mCursor;
     // The URL used to target the content provider
-    static final Uri CONTENT_URL =
-            Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+
 
     public static final String ACTION_RESP =
             "com.moataz.intent.action.VENUE_PROCESSED";
+
+    final Uri CONTENT_URL =
+            Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
 
    VenuesResponse vResponse;
     TextView venue_tv;
@@ -57,6 +61,8 @@ public class DetailFragment extends Fragment {
     ContentResolver resolver;
     String name;
     View view;
+    String eventID;
+     FloatingActionButton programFab1;
 
     public DetailFragment() {
     }
@@ -100,6 +106,8 @@ public class DetailFragment extends Fragment {
         venue_tv = (TextView) view.findViewById(R.id.venue_tv);
 
 
+
+
         Intent intent = getActivity().getIntent();
         final Event event =  intent.getParcelableExtra("Event");
 
@@ -108,7 +116,7 @@ public class DetailFragment extends Fragment {
         name_tv.setText(event.getName().getText());
         date_tv.setText(event.getStart().getLocal() + " to " +event.getEnd().getLocal());
         desc_tv.setText(event.getDescription().getText());
-
+        eventID = event.getId();
         Log.d("EventDetail_URL",event.getUrl());
         Log.d("EventDetail_VenueID",event.getVenueId());
         Log.d("EventDetail_URI",event.getResourceUri());
@@ -125,11 +133,7 @@ public class DetailFragment extends Fragment {
 //            @Override
 //            public void onClick(View view) {
 //
-//                values = new ContentValues();
-//                values.put("eDBID", name);
-//                values.put("event", name);
-//                resolver.insert(CONTENT_URL, values);
-//                Log.d("URI",CONTENT_URL.toString());
+
 //
 //            }
 //        });
@@ -145,25 +149,33 @@ public class DetailFragment extends Fragment {
 
 
 
+
+
         final FloatingActionMenu menu = (FloatingActionMenu) view.findViewById(R.id.menu);
 
-        final FloatingActionButton programFab1 = new FloatingActionButton(getActivity());
+        programFab1 = new FloatingActionButton(getActivity());
         programFab1.setButtonSize(FloatingActionButton.SIZE_MINI);
-        programFab1.setImageResource(R.drawable.ic_star);
+        programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
         menu.addMenuButton(programFab1);
-
+        new lookOnlyEvent().execute(eventID);
 
         programFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
 
                 values = new ContentValues();
                 Gson gson = new Gson();
 
                 values.put("eDBID", event.getId());
                 values.put("event", gson.toJson(event));
-                resolver.insert(CONTENT_URL, values);
-                Log.d("URI",CONTENT_URL.toString());
+
+//                new AddEvent().execute(values);
+                new lookNCREvent().execute(eventID);
+
+
+
 
             }
         });
@@ -174,6 +186,15 @@ public class DetailFragment extends Fragment {
         programFab2.setImageResource(R.drawable.ic_share);
         menu.addMenuButton(programFab2);
 
+        programFab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//               Boolean state = new lookupEvent().execute(eventID);
+
+
+
+            }
+        });
 
 
 
@@ -191,44 +212,7 @@ public class DetailFragment extends Fragment {
     }
 
 
-    public void getMoviesFromDB(){
 
-        // Projection contains the columns we want
-        String[] projection = new String[]{"id", "eDBID","event"};
-
-        // Pass the URL, projection and I'll cover the other options below
-        Cursor cursor = resolver.query(CONTENT_URL, projection, null, null, null);
-
-
-
-        // Cycle through and display every row of data
-        if(cursor.moveToFirst()){
-
-            do{
-
-                String movie = cursor.getString(cursor.getColumnIndex("event"));
-                String idfromdb = cursor.getString(cursor.getColumnIndex("eDBID"));
-
-
-                try {
-
-                    Log.d("fromDB", movie);
-
-
-                } catch (Exception e)
-                {e.printStackTrace();}
-
-
-
-            }while (cursor.moveToNext());
-
-        }
-
-        cursor.close();
-
-
-
-    }
 
 
     public class VenueResponseReciver extends BroadcastReceiver {
@@ -272,7 +256,147 @@ public class DetailFragment extends Fragment {
 
 
         }
+
+
+
+    private class AddEvent extends AsyncTask<ContentValues, Void, Boolean> {
+         final Uri CONTENT_URL =
+                Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+
+        @Override
+        protected Boolean doInBackground(ContentValues... params) {
+
+
+            Log.d("stuff",params[0].get("eDBID").toString());
+            return resolver.insert(CONTENT_URL, params[0]) != null;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            if (result){
+
+                Snackbar snackbar = Snackbar
+                        .make(view, "No More Events", Snackbar.LENGTH_LONG);
+
+                snackbar.show();
+            }
+
+        }
     }
+    private class DeleteEvent extends AsyncTask<String, Void, Boolean> {
+        final Uri CONTENT_URL =
+                Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            Log.d("stuff",params[0]);
+            return resolver.delete(CONTENT_URL, "eDBID = ? ", new String[]{params[0]}) == 1;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            if (result){
+
+                Snackbar snackbar = Snackbar
+                        .make(view, "deleted", Snackbar.LENGTH_LONG);
+
+                snackbar.show();
+            }
+
+        }
+    }
+
+
+    public boolean lookupEvent(String id){
+
+        String[] projection = new String[]{"id", "eDBID","event"};
+
+
+        Cursor cursor = resolver.query(CONTENT_URL,
+                projection, "eDBID = ? ", new String[]{id}, null);
+
+
+        assert cursor != null;
+        if(cursor.moveToFirst()){
+            String moviefromdb = cursor.getString(cursor.getColumnIndex("event"));
+            Log.d("lookup", moviefromdb);
+
+            cursor.close();
+            return true;
+        }else{
+            cursor.close();
+            return false;
+        }
+
+    }
+
+
+
+    private class lookNCREvent extends AsyncTask<String, Void, Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+                return lookupEvent(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            if (result){
+
+                Snackbar snackbar = Snackbar
+                        .make(view, "found it", Snackbar.LENGTH_LONG);
+
+                snackbar.show();
+                new DeleteEvent().execute(eventID);
+
+                programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
+            } else {
+                new AddEvent().execute(values);
+                programFab1.setImageResource(R.drawable.ic_star_white_24dp);
+            }
+
+
+        }
+    }
+
+
+    private class lookOnlyEvent extends AsyncTask<String, Void, Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            return lookupEvent(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            if (result){
+
+
+                programFab1.setImageResource(R.drawable.ic_star_white_24dp);
+
+
+            } else {
+                programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
+            }
+
+
+        }
+    }
+
+
+
+}
 
 
 
