@@ -19,6 +19,9 @@ import com.moataz.eventboard.UI.Detail;
  * Created by moataz on 21/01/17.
  */
 public class WidgetProvider extends AppWidgetProvider {
+
+    public static final String ACTION_DATA_UPDATED = "com.moataz.ACTION_DATA_UPDATED";
+
     private static final String LOG_TAG = WidgetProvider.class.getSimpleName();
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -48,7 +51,7 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (intent.getAction().equals(EventsIntentService.ACTION_DATA_UPDATED)){
+        if (intent.getAction().equals(ACTION_DATA_UPDATED)){
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context,getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,R.id.widgetCollectionList);

@@ -59,8 +59,8 @@
                     android:layout_gravity="bottom"
 
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/margin_16dp"
-                    android:paddingRight="@dimen/margin_16dp"
+                    android:paddingStart="@dimen/margin_16dp"
+                    android:paddingEnd="@dimen/margin_16dp"
                     >
 
                     <TextView
@@ -152,12 +152,24 @@
                 android:textSize="@dimen/detail_body_text_size"
                 android:lineSpacingMultiplier="@fraction/detail_body_line_spacing_multiplier"
                 android:layout_marginBottom="@dimen/margin_16dp"
-                android:layout_marginLeft="@dimen/margin_16dp"
-                android:layout_marginRight="@dimen/margin_16dp"
+                android:layout_marginStart="@dimen/margin_16dp"
+                android:layout_marginEnd="@dimen/margin_16dp"
                 android:paddingTop="@dimen/margin_16dp"
                 android:autoLink="web"
                 android:linksClickable="true"/>
 
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/fav"-->
+                <!--android:text="fav"/>-->
+
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="New Button"-->
+                <!--android:id="@+id/button"-->
+                <!--android:layout_gravity="right" />-->
 
 
         </LinearLayout>
@@ -177,8 +189,12 @@
         app:layout_anchor="@id/toolbar_container"
         app:layout_anchorGravity="bottom|end"
         android:elevation="8dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="10dp"
         fab:menu_labels_ellipsize="end"
         fab:menu_labels_singleLine="true"
+        fab:menu_backgroundColor="#ccffffff"
         fab:menu_colorNormal="@color/colorAccent"
         fab:menu_colorPressed="@color/md_red_A700"
         fab:menu_colorRipple="@color/md_red_100"

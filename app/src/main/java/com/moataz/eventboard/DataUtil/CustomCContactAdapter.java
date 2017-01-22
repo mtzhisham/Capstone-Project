@@ -2,46 +2,37 @@ package com.moataz.eventboard.DataUtil;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.moataz.MultiDexApplication.eventboard.R;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
+import com.google.gson.Gson;
+import com.moataz.MultiDexApplication.eventboard.R;
 import com.moataz.eventboard.ParserUtil.Event;
 
-import com.moataz.eventboard.UI.EventsFragment;
-
-import java.util.List;
-
 /**
- * Created by moataz on 19/01/17.
+ * Created by moataz on 22/01/17.
  */
-public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+public class CustomCContactAdapter  extends RecyclerView.Adapter<CustomCContactAdapter.ViewHolder> {
+    Cursor cursor;
 
+    Context mContext;
+    LayoutInflater inflater;
 
-    // Store a member variable for the events
-    private List<Event> mEvents;
-    // Store the context for easy access
-    private Context mContext;
     private static ClickListener clickListener;
 
-
-    // Pass in the events array into the constructor
-    public EventsAdapter(Context context, List<Event> mEvents) {
-        this.mEvents = mEvents;
+    public CustomCContactAdapter  (Context context, Cursor cursor) {
         mContext = context;
+        this.cursor = cursor;
+        inflater = (LayoutInflater) mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    // Easy access to the context object in the recyclerview
-    private Context getContext() {
-        return mContext;
-    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // Your holder should contain a member variable
@@ -76,10 +67,26 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         }
 
 
+
+
     }
 
+
+//    @Override
+//    public CustomCContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//        Context context = parent.getContext();
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//
+//        // Inflate the custom layout
+//        View eventsView = inflater.inflate(R.layout.raw_item, parent, false);
+//
+//        // Return a new holder instance
+//        ViewHolder viewHolder = new ViewHolder(eventsView);
+//        return viewHolder;
+//    }
+
     public void setOnItemClickListener(ClickListener clickListener) {
-        EventsAdapter.clickListener = clickListener;
+        CustomCContactAdapter.clickListener = clickListener;
     }
 
     public interface ClickListener {
@@ -87,9 +94,10 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         void onItemLongClick(int position, View v);
     }
 
+
     @Override
-    public EventsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
@@ -100,14 +108,19 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         return viewHolder;
     }
 
-
-
-
     @Override
-    public void onBindViewHolder(EventsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+
+
 
         // Get the data model based on position
-        Event event = mEvents.get(position);
+       cursor.moveToPosition(position);
+        Gson gson = new Gson();
+
+        Event event = gson.fromJson(cursor.getString(cursor.getColumnIndex("event")), Event.class );
+
+
 
         // Set item views based on your views and data model
         TextView textView = holder.nameTextView;
@@ -118,30 +131,55 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
 
         ImageView posterImageView = holder.imageView;
 
-try {
-    Glide.with(getContext())
-            .load(event.getLogo().getOriginal().getUrl())
-            .crossFade()
-            .placeholder(R.mipmap.ic_launcher)
-            .into(posterImageView);
+        try {
+            Glide.with(mContext)
+                    .load(event.getLogo().getOriginal().getUrl())
+                    .crossFade()
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(posterImageView);
 
-} catch (Exception e){
-    e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
 
-    posterImageView.setImageDrawable(getContext().getDrawable(R.mipmap.ic_launcher));
-}
-
-
+            posterImageView.setImageDrawable(mContext.getDrawable(R.mipmap.ic_launcher));
+        }
 
     }
+
+
+
+
 
     @Override
     public int getItemCount() {
-        return mEvents.size();
-
+        return cursor.getCount();
     }
 
 
 
-
+//
+//    @Override
+//    public int getCount() {
+//        return cursor.getCount();
+//    }
+//
+//    @Override
+//    public Object getItem(int i) {
+//        return null;
+//    }
+//
+//    @Override
+//    public long getItemId(int i) {
+//        return 0;
+//    }
+//
+//    @Override
+//    public View getView(int i, View view, ViewGroup viewGroup) {
+//
+//        cursor.moveToPosition(i);
+//
+//        return null;
+//
+//
+//    }
 }

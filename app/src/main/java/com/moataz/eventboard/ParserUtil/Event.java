@@ -1,6 +1,7 @@
 package com.moataz.eventboard.ParserUtil;
 
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,11 +9,13 @@ import com.google.android.gms.plus.model.people.Person;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import icepick.Bundler;
+
 /**
  * Created by moataz on 1/6/2017.
  */
 
-public class Event implements Parcelable {
+public class Event implements Parcelable, Bundler<Event> {
 
 
     @SerializedName("name")
@@ -177,5 +180,15 @@ public class Event implements Parcelable {
         parcel.writeString(logoId);
         parcel.writeString(venueId);
         parcel.writeString(resourceUri);
+    }
+
+    @Override
+    public void put(String s, Event event, Bundle bundle) {
+
+    }
+
+    @Override
+    public Event get(String s, Bundle bundle) {
+        return null;
     }
 }

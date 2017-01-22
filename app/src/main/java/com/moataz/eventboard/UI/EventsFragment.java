@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.gson.Gson;
 import com.moataz.MultiDexApplication.eventboard.R;
 import com.moataz.eventboard.DataUtil.EventsAdapter;
 import com.moataz.eventboard.ParserUtil.Event;
@@ -40,6 +42,8 @@ import com.moataz.eventboard.Syncing.EventsIntentService;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.Icepick;
+import icepick.State;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -59,24 +63,38 @@ public class EventsFragment extends Fragment {
     int PLACE_PICKER_REQUEST = 1;
 
      EventResponse eResponse;
+
     public static final String ACTION_RESP =
             "com.moataz.intent.action.EVENTS_PROCESSED";
 
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
-    private static Integer page = 1;
+    @State
+    public Integer page = 1;
 
     private static IntentFilter filter;
 
-    List<Event> events;
-    private static boolean Firsttime = true;
+
+   List<Event> events;
+
+    @State
+    public boolean Firsttime = true;
+
+    @State
+     boolean init = true;
+
     public static final String ARG_PAGE = "ARG_PAGE";
     public View view;
     public RecyclerView rvEvents;
+
+
     EventsAdapter adapter;
+
     SharedPreferences sharedPref;
-    private int mPage;
-    List list;
+
+    @State
+     int mPage;
+
 
     // TODO: Rename and change types of parameters
 
@@ -121,9 +139,27 @@ public class EventsFragment extends Fragment {
         receiver = new EventsResponseReciver(new Handler());
         getActivity().registerReceiver(receiver, filter);
 
+if (savedInstanceState != null) {
+    if (savedInstanceState.containsKey("events")) {
+        if (events == null) {
+            events = savedInstanceState.getParcelableArrayList("events");
+        }
+    }
+}
+        Icepick.restoreInstanceState(this, savedInstanceState);
 
     }
 
+    boolean mDualPane;
+
+
+
+    @Override public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("events", (ArrayList<? extends Parcelable>) events);
+        Icepick.saveInstanceState(this, outState);
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -145,13 +181,15 @@ public class EventsFragment extends Fragment {
         view =  inflater.inflate(R.layout.fragment_events, container, false);
 //        TextView tvTitle = (TextView) view.findViewById(R.id.tv);
 //        tvTitle.setText("Fragment #" + mPage);
-        events = new ArrayList<Event>();
+        if (events == null){
+            events = new ArrayList<Event>();
+        }
+
         adapter = new EventsAdapter(context, events);
         rvEvents = (RecyclerView)  view.findViewById(R.id.rvEvents);
         // Attach the adapter to the recyclerview to populate items
         rvEvents.setAdapter(adapter);
 
-        rvEvents = (RecyclerView) view.findViewById(R.id.rvEvents);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         rvEvents.setLayoutManager(linearLayoutManager);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
@@ -183,10 +221,14 @@ public class EventsFragment extends Fragment {
        sharedPref =getActivity().getPreferences(Context.MODE_PRIVATE);
 
 
-            startService(sharedPref.getString("place","NY, USA"), "1");
-
+        if (init) {
+            startService(sharedPref.getString("place", "NY, USA"), "1");
+        init = false;
+        }
         Float lat = sharedPref.getFloat("lat",5);
-        Log.d("from shared",lat.toString());
+        Float log = sharedPref.getFloat("log",5);
+        Log.d("from shared lat",lat.toString());
+        Log.d("from shared log",log.toString());
 
         return view;
     }
@@ -203,17 +245,13 @@ public class EventsFragment extends Fragment {
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
 
-        Integer page = offset+1;
+       page = offset+1;
 
         startService(sharedPref.getString("place","NY, USA"), page.toString());
 
 
     }
 
-
-    public void addData(){
-
-    }
 
 
     public void startService(String adress, String page){
@@ -397,6 +435,7 @@ public class EventsFragment extends Fragment {
 //                            intent1.putExtra("url",eResponse.events.get(position).getLogo().getOriginal().getUrl());
 //                            intent1.putExtra("name",eResponse.events.get(position).getName().getText());
                             intent1.putExtra("Event",events.get(position));
+
 
 
                             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(

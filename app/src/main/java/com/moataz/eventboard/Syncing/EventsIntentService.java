@@ -28,14 +28,13 @@ public class EventsIntentService extends IntentService {
     public static final String PAGE = "PAGE";
     Intent broadcastIntent;
     private Context mContext;
-    public static final String ACTION_DATA_UPDATED = "com.moataz.ACTION_DATA_UPDATED";
+
 
 
     public static final String ACTION_RESP =
             "com.moataz.intent.action.EVENTS_PROCESSED";
 
-    public static final String ACTION_FAILED =
-            "com.moataz.intent.action.EVENTS_NOTPROCESSED";
+
 
     public EventsIntentService(){
         super("EventsIntentService");
@@ -96,12 +95,6 @@ public class EventsIntentService extends IntentService {
 
                 }
 
-
-
-
-
-                Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
-                mContext.sendBroadcast(dataUpdatedIntent);
             }
 
             @Override

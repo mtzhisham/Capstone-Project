@@ -3,14 +3,21 @@ package com.moataz.eventboard.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.AppWidgetTarget;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.ViewTarget;
+import com.google.gson.Gson;
 import com.moataz.eventboard.DataUtil.EventsProvider;
 
 import com.moataz.MultiDexApplication.eventboard.R;
+import com.moataz.eventboard.ParserUtil.Event;
 
 /**
  * Created by moataz on 23/09/16.
@@ -27,6 +34,8 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
 
     static final Uri CONTENT_URL =
             Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+
+    private AppWidgetTarget appWidgetTarget;
 
     private static final String LOG_TAG = EventWidgetRemoteViewService.class.getSimpleName();
     public EventWidgetRemoteViewService() {
@@ -89,11 +98,17 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
                 int priceChangeColorId;
 
                 // get Stock Quote information
-                String eventID = mCursor.getString(mCursor.getColumnIndex("eDBID"));
+
+
+                Gson gson = new Gson();
+                Event event = gson.fromJson(mCursor.getString(mCursor.getColumnIndex("event")), Event.class);
 
                 // create List Item for Widget ListView
                 RemoteViews listItemRemoteView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_event_widget);
-                listItemRemoteView.setTextViewText(R.id.event_id,eventID);
+                listItemRemoteView.setTextViewText(R.id.event_name,event.getName().getText());
+                listItemRemoteView.setTextViewText(R.id.event_date,event.getStart().getLocal());
+
+
 
 
 
@@ -101,7 +116,7 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
                 // set Onclick Item Intent
                 Intent onClickItemIntent = new Intent();
                 //sending the sym required for graph activity to start
-//                onClickItemIntent.putExtra(getString(R.string.MENU_SYM),stockSymbol);
+                onClickItemIntent.putExtra("Event", event);
                 listItemRemoteView.setOnClickFillInIntent(R.id.list_item_event_widget,onClickItemIntent);
                 return listItemRemoteView;
             }catch (Exception e){

@@ -17,8 +17,10 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.util.Pair;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +41,9 @@ import com.moataz.eventboard.ParserUtil.VenuesResponse;
 import com.moataz.eventboard.Syncing.EventsIntentService;
 import com.moataz.eventboard.Syncing.VeunesIntentService;
 
+import icepick.Icepick;
+import icepick.State;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -53,10 +58,28 @@ public class DetailFragment extends Fragment {
     final Uri CONTENT_URL =
             Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
 
-   VenuesResponse vResponse;
+
+    public static final String ACTION_DATA_UPDATED = "com.moataz.ACTION_DATA_UPDATED";
+
+    @State
+    Event event;
+    @State
+    String v_name;
+
+    @State
+    boolean there;
+
+    @State
+    boolean started;
+
+    VenuesResponse vResponse;
     TextView venue_tv;
     public static final String VID = "VID";
     ContentValues values;
+    Context mContext;
+    Intent myShareIntent;
+    ShareActionProvider myShareActionProvider;
+
     private static IntentFilter filter;
     ContentResolver resolver;
     String name;
@@ -71,6 +94,10 @@ public class DetailFragment extends Fragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+
+
+        Icepick.restoreInstanceState(this, savedInstanceState);
+
         super.onCreate(savedInstanceState);
 
         resolver = getActivity().getContentResolver();
@@ -80,6 +107,17 @@ public class DetailFragment extends Fragment {
 
         receiver = new VenueResponseReciver(new Handler());
         getActivity().registerReceiver(receiver, filter);
+
+        mContext = getActivity();
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Icepick.saveInstanceState(this, outState);
+
     }
 
     @Override
@@ -109,17 +147,21 @@ public class DetailFragment extends Fragment {
 
 
         Intent intent = getActivity().getIntent();
-        final Event event =  intent.getParcelableExtra("Event");
+        if (event == null){
+            event =  intent.getParcelableExtra("Event");
+            Log.d("Details","new events");
+        }
+
 
         String url = event.getLogo().getUrl();
-        startService(event.getVenueId());
+
         name_tv.setText(event.getName().getText());
         date_tv.setText(event.getStart().getLocal() + " to " +event.getEnd().getLocal());
         desc_tv.setText(event.getDescription().getText());
         eventID = event.getId();
-        Log.d("EventDetail_URL",event.getUrl());
-        Log.d("EventDetail_VenueID",event.getVenueId());
-        Log.d("EventDetail_URI",event.getResourceUri());
+//        Log.d("EventDetail_URL",event.getUrl());
+//        Log.d("EventDetail_VenueID",event.getVenueId());
+//        Log.d("EventDetail_URI",event.getResourceUri());
 
         Glide.with(getContext())
                 .load(url)
@@ -128,36 +170,23 @@ public class DetailFragment extends Fragment {
                 .into(imageView);
 
 
-//        Button fav = (Button) view.findViewById(R.id.fav);
-//        fav.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-
-//
-//            }
-//        });
-
-
-//        Button button = (Button) view.findViewById(R.id.button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                getMoviesFromDB();
-//            }
-//        });
-
-
-
 
 
         final FloatingActionMenu menu = (FloatingActionMenu) view.findViewById(R.id.menu);
 
         programFab1 = new FloatingActionButton(getActivity());
         programFab1.setButtonSize(FloatingActionButton.SIZE_MINI);
-        programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
+
         menu.addMenuButton(programFab1);
-        new lookOnlyEvent().execute(eventID);
+
+        if(!started){
+            Log.d("started","in");
+            startService(event.getVenueId());
+            new lookOnlyEvent().execute(eventID);
+            started =true;
+        }
+
+
 
         programFab1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,9 +221,25 @@ public class DetailFragment extends Fragment {
 //               Boolean state = new lookupEvent().execute(eventID);
 
 
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, "share Event URL");
+                i.putExtra(Intent.EXTRA_TEXT, event.getUrl());
+                startActivity(Intent.createChooser(i, "Share URL"));
+
 
             }
         });
+
+
+        venue_tv.setText(v_name);
+
+        if(there){
+            programFab1.setImageResource(R.drawable.ic_star_white_24dp);
+        } else {
+            programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
+        }
+
 
 
 
@@ -240,7 +285,9 @@ public class DetailFragment extends Fragment {
 
                     Log.d("fromFragment",vResponse.getName());
 
-                    venue_tv.setText(vResponse.getName());
+                    v_name = vResponse.getName();
+
+                    venue_tv.setText(v_name);
 
 
                 }
@@ -249,19 +296,12 @@ public class DetailFragment extends Fragment {
                 }
 
 
-
-
-
-
-
-
         }
 
 
 
     private class AddEvent extends AsyncTask<ContentValues, Void, Boolean> {
-         final Uri CONTENT_URL =
-                Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+
 
         @Override
         protected Boolean doInBackground(ContentValues... params) {
@@ -278,17 +318,15 @@ public class DetailFragment extends Fragment {
 
             if (result){
 
-                Snackbar snackbar = Snackbar
-                        .make(view, "No More Events", Snackbar.LENGTH_LONG);
-
-                snackbar.show();
+                Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+                mContext.sendBroadcast(dataUpdatedIntent);
+               //result
             }
 
         }
     }
     private class DeleteEvent extends AsyncTask<String, Void, Boolean> {
-        final Uri CONTENT_URL =
-                Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
+
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -302,10 +340,10 @@ public class DetailFragment extends Fragment {
 
             if (result){
 
-                Snackbar snackbar = Snackbar
-                        .make(view, "deleted", Snackbar.LENGTH_LONG);
+                Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+                mContext.sendBroadcast(dataUpdatedIntent);
 
-                snackbar.show();
+              //result
             }
 
         }
@@ -323,8 +361,8 @@ public class DetailFragment extends Fragment {
 
         assert cursor != null;
         if(cursor.moveToFirst()){
-            String moviefromdb = cursor.getString(cursor.getColumnIndex("event"));
-            Log.d("lookup", moviefromdb);
+            String eventfromdb = cursor.getString(cursor.getColumnIndex("event"));
+            Log.d("lookup", eventfromdb);
 
             cursor.close();
             return true;
@@ -358,9 +396,11 @@ public class DetailFragment extends Fragment {
                 new DeleteEvent().execute(eventID);
 
                 programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
+                there = false;
             } else {
                 new AddEvent().execute(values);
                 programFab1.setImageResource(R.drawable.ic_star_white_24dp);
+                there = true;
             }
 
 
@@ -384,10 +424,12 @@ public class DetailFragment extends Fragment {
 
 
                 programFab1.setImageResource(R.drawable.ic_star_white_24dp);
+                there = true;
 
 
             } else {
                 programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
+                there = false;
             }
 
 
