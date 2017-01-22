@@ -106,12 +106,13 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         TextView textView = holder.nameTextView;
         textView.setText(event.getName().getText());
 
-        TextView idtextView = holder.dateTextView;
-        idtextView.setText(event.getId());
+        TextView datetextView = holder.dateTextView;
+        datetextView.setText(event.getStart().getLocal());
 
         ImageView posterImageView = holder.imageView;
 
 try {
+
     Glide.with(getContext())
             .load(event.getLogo().getOriginal().getUrl())
             .crossFade()

@@ -38,7 +38,7 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
-        public TextView idTextView;
+        public TextView dateTextView;
         public ImageView imageView;
 
 
@@ -51,7 +51,7 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             nameTextView = (TextView) itemView.findViewById(R.id.event_name);
-            idTextView = (TextView) itemView.findViewById(R.id.event_id);
+            dateTextView = (TextView) itemView.findViewById(R.id.event_date);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
         }
 
@@ -113,7 +113,7 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
         TextView textView = holder.nameTextView;
         textView.setText(event.getName().getText());
 
-        TextView idtextView = holder.idTextView;
+        TextView idtextView = holder.dateTextView;
         idtextView.setText(event.getId());
 
         ImageView posterImageView = holder.imageView;

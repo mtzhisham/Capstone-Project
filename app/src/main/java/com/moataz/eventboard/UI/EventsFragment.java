@@ -423,7 +423,7 @@ if (savedInstanceState != null) {
                     adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
                         @Override
                         public void onItemClick(int position, View v) {
-                            Toast.makeText(context," "+ position, Toast.LENGTH_LONG).show();
+
 
                             Intent intent1 = new Intent(getActivity(),Detail.class);
 
@@ -442,7 +442,7 @@ if (savedInstanceState != null) {
                                     ,
                                     new Pair<View, String>(view.findViewById(R.id.event_name),
                                             getString(R.string.transition_name_name)),
-                                    new Pair<View, String>(view.findViewById(R.id.event_id),
+                                    new Pair<View, String>(view.findViewById(R.id.event_date),
                                             getString(R.string.transition_name_date))
                             );
 

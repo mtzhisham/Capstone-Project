@@ -198,7 +198,7 @@ public class FavFragment extends Fragment  implements
                         ,
                         new Pair<View, String>(view.findViewById(R.id.event_name),
                                 getString(R.string.transition_name_name)),
-                        new Pair<View, String>(view.findViewById(R.id.event_id),
+                        new Pair<View, String>(view.findViewById(R.id.event_date),
                                 getString(R.string.transition_name_date))
                 );
 

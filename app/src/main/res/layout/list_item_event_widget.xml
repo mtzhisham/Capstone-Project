@@ -12,7 +12,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:id="@+id/list_item_event_widget"
-    android:background="#FAFAFA"
+    android:background="@color/md_white_1000"
 
 
     >
