@@ -19,7 +19,6 @@ card_view:cardElevation="8dp"
             android:layout_height="250dp"
             android:id="@+id/imageView"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
             android:layout_gravity="center"
             android:transitionGroup="true"/>
 
@@ -40,16 +39,20 @@ card_view:cardElevation="8dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="test"
                 android:transitionGroup="true"
+                android:textColor="@color/md_black_1000"
+                android:contentDescription="@string/event_name_desc"
+                android:layoutDirection="locale"
                 />
             <TextView
-                android:id="@+id/event_id"
+                android:id="@+id/event_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="test"
                 android:transitionGroup="true"
+                android:textColor="@color/md_black_1000"
+                android:contentDescription="@string/event_date_desc"
+                android:layoutDirection="locale"
                 />
 
         </LinearLayout>

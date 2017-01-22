@@ -40,7 +40,7 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView nameTextView;
-        public TextView idTextView;
+        public TextView dateTextView;
         public ImageView imageView;
 
 
@@ -53,7 +53,7 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
             nameTextView = (TextView) itemView.findViewById(R.id.event_name);
-            idTextView = (TextView) itemView.findViewById(R.id.event_id);
+            dateTextView = (TextView) itemView.findViewById(R.id.event_date);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
         }
 
@@ -106,7 +106,7 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
         TextView textView = holder.nameTextView;
         textView.setText(event.getName().getText());
 
-        TextView idtextView = holder.idTextView;
+        TextView idtextView = holder.dateTextView;
         idtextView.setText(event.getId());
 
         ImageView posterImageView = holder.imageView;

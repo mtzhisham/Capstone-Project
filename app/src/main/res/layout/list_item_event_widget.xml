@@ -26,6 +26,7 @@
       android:textDirection="locale"
       android:textColor="@color/md_black_1000"
       android:layout_weight="1"
+      android:contentDescription="@string/event_name_desc"
       />
 
   <TextView
@@ -38,6 +39,7 @@
       android:textDirection="locale"
       android:textColor="@color/md_black_1000"
       android:layout_weight="1"
+      android:contentDescription="@string/event_date_desc"
       />
 
 </LinearLayout>

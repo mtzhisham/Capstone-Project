@@ -18,8 +18,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
             android:src="@mipmap/ic_launcher"
-            android:contentDescription=" "
+            android:contentDescription="@string/app_logo_desc"
             android:layoutDirection="locale"
+
 
             />
 
@@ -36,7 +37,8 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:layoutDirection="locale"
-            android:textDirection="locale"/>
+            android:textDirection="locale"
+            android:contentDescription="@string/app_name"/>
     </LinearLayout>
 
 
