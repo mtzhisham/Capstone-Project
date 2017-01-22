@@ -331,7 +331,6 @@ if (savedInstanceState != null) {
             case R.id.place:
                 pickLocation();
                 return true;
-            case R.id.about:
             default:
                 return super.onOptionsItemSelected(item);
         }

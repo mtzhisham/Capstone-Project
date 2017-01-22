@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.moataz.MultiDexApplication.eventboard.BuildConfig;
+import com.moataz.MultiDexApplication.eventboard.R;
 import com.moataz.eventboard.ParserUtil.EventResponse;
 
 import retrofit2.Call;
@@ -44,7 +46,7 @@ public class EventsIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        if (mContext == null){
+        if (mContext == null) {
             mContext = this;
         }
 
@@ -67,24 +69,32 @@ public class EventsIntentService extends IntentService {
         MyApiEndpointInterface apiService =
                 retrofit.create(MyApiEndpointInterface.class);
 
-        Call<EventResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY,page, address, lat, log);
+        Call<EventResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY, page, address, lat, log);
 
         call.enqueue(new Callback<EventResponse>() {
             @Override
             public void onResponse(Call<EventResponse> call, Response<EventResponse> response) {
-                int statusCode = response.code();
-
-                if (response.body().events.size() !=0){
-
-                    broadcastIntent.putExtra("response",response.body());
-                    sendBroadcast(broadcastIntent);
-
-                } else {
-
-                    broadcastIntent.putExtra("response","FAIL");
-                    sendBroadcast(broadcastIntent);
+//                int statusCode = response.code();
 
 
+                try {
+
+                    if (response.body().events.size() != 0) {
+
+                        broadcastIntent.putExtra("response", response.body());
+                        sendBroadcast(broadcastIntent);
+
+                    } else {
+
+                        broadcastIntent.putExtra("response", "FAIL");
+                        sendBroadcast(broadcastIntent);
+
+
+                    }
+
+                } catch (Exception e) {
+                    Toast.makeText(EventsIntentService.this, getResources().getString(R.string.conn_toast), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
 
             }
@@ -96,10 +106,7 @@ public class EventsIntentService extends IntentService {
         });
 
 
-
-
     }
-
 
 
 

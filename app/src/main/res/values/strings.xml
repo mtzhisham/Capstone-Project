@@ -20,6 +20,7 @@
     <string name="action_menu_desc">action menu </string>
     <string name="tabs_desc">tabs</string>
     <string name="place_select">place</string>
+    <string name="conn_toast">something is wrong!</string>
 
 
 

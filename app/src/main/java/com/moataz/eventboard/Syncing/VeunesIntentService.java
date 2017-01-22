@@ -64,7 +64,9 @@ public class VeunesIntentService extends IntentService {
         call.enqueue(new Callback<VenuesResponse>() {
             @Override
             public void onResponse(Call<VenuesResponse> call, Response<VenuesResponse> response) {
-                int statusCode = response.code();
+//                int statusCode = response.code();
+
+
 
                 broadcastIntent.putExtra("response",response.body());
                 sendBroadcast(broadcastIntent);
