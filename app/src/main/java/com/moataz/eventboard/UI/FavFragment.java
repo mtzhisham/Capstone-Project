@@ -170,8 +170,8 @@ public class FavFragment extends Fragment  implements
         mAdapter.setOnItemClickListener(new CustomCEventAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Toast.makeText(context," "+ position, Toast.LENGTH_LONG).show();
-                Log.d("adapter",position+"");
+//                Toast.makeText(context," "+ position, Toast.LENGTH_LONG).show();
+//                Log.d("adapter",position+"");
 
 
 
