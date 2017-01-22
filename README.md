@@ -1,4 +1,4 @@
-# Udacity Ansroid Developer Nanodegree Capstone project 
+# Udacity Android Developer Nanodegree Capstone project 
 
 ## EventBoard
 
