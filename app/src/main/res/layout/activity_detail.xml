@@ -9,8 +9,6 @@
     android:fitsSystemWindows="true">
 
 
-
-
     <include layout="@layout/content_detail" />
 
     <com.google.android.gms.ads.AdView

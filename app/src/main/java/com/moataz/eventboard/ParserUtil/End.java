@@ -12,6 +12,17 @@ import com.google.gson.annotations.SerializedName;
 public class End implements Parcelable {
 
 
+    public static final Creator<End> CREATOR = new Creator<End>() {
+        @Override
+        public End createFromParcel(Parcel in) {
+            return new End(in);
+        }
+
+        @Override
+        public End[] newArray(int size) {
+            return new End[size];
+        }
+    };
     @SerializedName("timezone")
     @Expose
     private String timezone;
@@ -27,18 +38,6 @@ public class End implements Parcelable {
         local = in.readString();
         utc = in.readString();
     }
-
-    public static final Creator<End> CREATOR = new Creator<End>() {
-        @Override
-        public End createFromParcel(Parcel in) {
-            return new End(in);
-        }
-
-        @Override
-        public End[] newArray(int size) {
-            return new End[size];
-        }
-    };
 
     public String getTimezone() {
         return timezone;

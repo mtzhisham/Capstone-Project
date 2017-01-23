@@ -13,7 +13,7 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 
     <application
@@ -52,8 +52,7 @@
             android:name="com.moataz.eventboard.DataUtil.EventsProvider"
             android:authorities="com.moataz.eventboard.DataUtil.EventsProvider"
             android:exported="false"
-            android:multiprocess="true" >
-        </provider>
+            android:multiprocess="true"></provider>
 
 
         <receiver
@@ -62,20 +61,21 @@
             android:name="com.moataz.eventboard.widget.WidgetProvider">
 
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.moataz.ACTION_DATA_UPDATED"/>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.moataz.ACTION_DATA_UPDATED" />
             </intent-filter>
 
-            <meta-data android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider"/>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
         </receiver>
 
 
-        <service android:name="com.moataz.eventboard.widget.EventWidgetRemoteViewService"
+        <service
+            android:name="com.moataz.eventboard.widget.EventWidgetRemoteViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>
-
 
 
 </manifest>

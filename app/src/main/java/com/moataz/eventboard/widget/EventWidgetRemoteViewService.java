@@ -3,19 +3,13 @@ package com.moataz.eventboard.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.AppWidgetTarget;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.ViewTarget;
 import com.google.gson.Gson;
-import com.moataz.eventboard.DataUtil.EventsProvider;
-
 import com.moataz.MultiDexApplication.eventboard.R;
 import com.moataz.eventboard.ParserUtil.Event;
 
@@ -24,24 +18,22 @@ import com.moataz.eventboard.ParserUtil.Event;
  */
 
 
-
 public class EventWidgetRemoteViewService extends RemoteViewsService {
 
     static final Uri CONTENT_URL =
             Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
-
+    private static final String LOG_TAG = EventWidgetRemoteViewService.class.getSimpleName();
     private AppWidgetTarget appWidgetTarget;
 
-    private static final String LOG_TAG = EventWidgetRemoteViewService.class.getSimpleName();
     public EventWidgetRemoteViewService() {
     }
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new WidgetItemRemoteView(this.getApplicationContext(),intent);
+        return new WidgetItemRemoteView(this.getApplicationContext(), intent);
     }
 
-    class WidgetItemRemoteView implements RemoteViewsService.RemoteViewsFactory{
+    class WidgetItemRemoteView implements RemoteViewsService.RemoteViewsFactory {
         Context mContext;
         Cursor mCursor;
         Intent mIntent;
@@ -66,13 +58,13 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
         public void onDataSetChanged() {
 
 
-            if (mCursor!=null)
+            if (mCursor != null)
                 mCursor.close();
 
             final long pId = Binder.clearCallingIdentity();
-            String[] projection = new String[]{"id", "eDBID","event"};
+            String[] projection = new String[]{"id", "eDBID", "event"};
             mCursor = getContentResolver().query(
-                   CONTENT_URL,
+                    CONTENT_URL,
                     projection, null, null, null
             );
 
@@ -86,7 +78,7 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
-            try{
+            try {
                 mCursor.moveToPosition(position);
 
 
@@ -95,21 +87,17 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
 
 
                 RemoteViews listItemRemoteView = new RemoteViews(mContext.getPackageName(), R.layout.list_item_event_widget);
-                listItemRemoteView.setTextViewText(R.id.event_name,event.getName().getText());
-                listItemRemoteView.setTextViewText(R.id.event_date,event.getStart().getLocal());
-
-
-
-
+                listItemRemoteView.setTextViewText(R.id.event_name, event.getName().getText());
+                listItemRemoteView.setTextViewText(R.id.event_date, event.getStart().getLocal());
 
 
                 // set Onclick Item Intent
                 Intent onClickItemIntent = new Intent();
 
                 onClickItemIntent.putExtra("Event", event);
-                listItemRemoteView.setOnClickFillInIntent(R.id.list_item_event_widget,onClickItemIntent);
+                listItemRemoteView.setOnClickFillInIntent(R.id.list_item_event_widget, onClickItemIntent);
                 return listItemRemoteView;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -123,7 +111,7 @@ public class EventWidgetRemoteViewService extends RemoteViewsService {
 
         @Override
         public void onDestroy() {
-            if (mCursor!=null)
+            if (mCursor != null)
                 mCursor.close();
         }
 

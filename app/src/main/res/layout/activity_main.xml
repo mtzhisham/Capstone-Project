@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
 
-
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-       >
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar_layout"
@@ -23,8 +19,7 @@
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             android:elevation="4dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            >
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
                 android:id="@+id/htab_header"
@@ -34,20 +29,19 @@
                 android:fitsSystemWindows="false"
                 android:scaleType="fitXY"
                 app:layout_collapseMode="parallax"
-                android:contentDescription="@string/event_image_desc"/>
+                android:contentDescription="@string/event_image_desc" />
 
-                <android.support.v7.widget.Toolbar
-                    android:layout_gravity="top"
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    app:contentInsetStart="1dp"
-                    app:layout_collapseMode="pin"
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                    android:layout_marginBottom="16dp"
-                    >
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="top"
+                android:layout_marginBottom="16dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                app:contentInsetStart="1dp"
+                app:layout_collapseMode="pin">
 
-                </android.support.v7.widget.Toolbar>
+            </android.support.v7.widget.Toolbar>
 
 
             <com.astuetz.PagerSlidingTabStrip
@@ -70,8 +64,6 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
 
-
-
     </android.support.design.widget.AppBarLayout>
 
 
@@ -81,8 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
 </android.support.design.widget.CoordinatorLayout>

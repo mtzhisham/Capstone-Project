@@ -12,15 +12,6 @@ import com.google.gson.annotations.SerializedName;
 public class Original implements Parcelable {
 
 
-    @SerializedName("url")
-    @Expose
-    private String url;
-
-
-    protected Original(Parcel in) {
-        url = in.readString();
-    }
-
     public static final Creator<Original> CREATOR = new Creator<Original>() {
         @Override
         public Original createFromParcel(Parcel in) {
@@ -32,6 +23,13 @@ public class Original implements Parcelable {
             return new Original[size];
         }
     };
+    @SerializedName("url")
+    @Expose
+    private String url;
+
+    protected Original(Parcel in) {
+        url = in.readString();
+    }
 
     public String getUrl() {
         return url;
@@ -40,7 +38,6 @@ public class Original implements Parcelable {
     public void setUrl(String url) {
         this.url = url;
     }
-
 
 
     @Override

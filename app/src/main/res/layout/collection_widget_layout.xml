@@ -19,10 +19,7 @@
             android:id="@+id/imageView"
             android:src="@mipmap/ic_launcher"
             android:contentDescription="@string/app_logo_desc"
-            android:layoutDirection="locale"
-
-
-            />
+            android:layoutDirection="locale" />
 
         <TextView
             android:layout_width="0dp"
@@ -38,7 +35,7 @@
             android:layout_gravity="center_vertical"
             android:layoutDirection="locale"
             android:textDirection="locale"
-            android:contentDescription="@string/app_name"/>
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 
 
@@ -46,8 +43,6 @@
         android:id="@+id/widgetCollectionList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layoutDirection="locale"
-        >
-    </StackView>
+        android:layoutDirection="locale"></StackView>
 </LinearLayout>
 

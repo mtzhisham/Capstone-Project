@@ -11,25 +11,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Logo implements Parcelable {
 
-    @SerializedName("original")
-    @Expose
-    private Original original;
-    @SerializedName("id")
-    @Expose
-    private String id;
-    @SerializedName("url")
-    @Expose
-    private String url;
-
-
-
-    protected Logo(Parcel in) {
-        original = in.readParcelable(Original.class.getClassLoader());
-        id = in.readString();
-        url = in.readString();
-
-    }
-
     public static final Creator<Logo> CREATOR = new Creator<Logo>() {
         @Override
         public Logo createFromParcel(Parcel in) {
@@ -41,6 +22,22 @@ public class Logo implements Parcelable {
             return new Logo[size];
         }
     };
+    @SerializedName("original")
+    @Expose
+    private Original original;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("url")
+    @Expose
+    private String url;
+
+    protected Logo(Parcel in) {
+        original = in.readParcelable(Original.class.getClassLoader());
+        id = in.readString();
+        url = in.readString();
+
+    }
 
     public Original getOriginal() {
         return original;
@@ -74,7 +71,7 @@ public class Logo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(original,i);
+        parcel.writeParcelable(original, i);
         parcel.writeString(id);
         parcel.writeString(url);
 

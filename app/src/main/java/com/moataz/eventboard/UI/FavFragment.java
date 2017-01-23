@@ -8,20 +8,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-
-
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.moataz.MultiDexApplication.eventboard.R;
@@ -40,37 +35,33 @@ import java.util.List;
  * Use the {@link FavFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavFragment extends Fragment  implements
+public class FavFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String ARG_PAGE = "ARG_PAGE";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-
+    public static Context context;
     final Uri CONTENT_URL =
             Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
-    public static final String ARG_PAGE = "ARG_PAGE";
-
-    private int mPage;
+    public RecyclerView rvEvents;
     ContentResolver resolver;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     View view;
-
     // If non-null, this is the current filter the user has provided.
     String mCurFilter;
     List<Event> events;
     CustomCEventAdapter mAdapter;
-    public RecyclerView rvEvents;
+    String[] projection = new String[]{"id", "eDBID", "event"};
+    private int mPage;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
     private OnFragmentInteractionListener mListener;
 
     public FavFragment() {
         // Required empty public constructor
     }
-
 
     // TODO: Rename and change types and number of parameters
     public static FavFragment newInstance(int page) {
@@ -82,7 +73,7 @@ public class FavFragment extends Fragment  implements
         fragment.setArguments(args);
         return fragment;
     }
-    public static Context context;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,29 +91,22 @@ public class FavFragment extends Fragment  implements
         getActivity().getSupportLoaderManager().initLoader(1, null, this);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_fav, container, false);
-
+        view = inflater.inflate(R.layout.fragment_fav, container, false);
 
 
         events = new ArrayList<Event>();
 
-        rvEvents = (RecyclerView)  view.findViewById(R.id.rvFavEvents);
+        rvEvents = (RecyclerView) view.findViewById(R.id.rvFavEvents);
         rvEvents.setLayoutManager(new LinearLayoutManager(context));
         // Attach the adapter to the recyclerview to populate items
         rvEvents.setAdapter(mAdapter);
 
 
-
-
-
-
 //        new loadEvents().execute();
-
 
 
         return view;
@@ -152,8 +136,6 @@ public class FavFragment extends Fragment  implements
         mListener = null;
     }
 
-    String[] projection = new String[]{"id", "eDBID","event"};
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -166,7 +148,7 @@ public class FavFragment extends Fragment  implements
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
         data.moveToFirst();
-        mAdapter = new CustomCEventAdapter(context,data);
+        mAdapter = new CustomCEventAdapter(context, data);
         mAdapter.setOnItemClickListener(new CustomCEventAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
@@ -174,16 +156,14 @@ public class FavFragment extends Fragment  implements
 //                Log.d("adapter",position+"");
 
 
-
-
-                Intent intent1 = new Intent(getActivity(),Detail.class);
+                Intent intent1 = new Intent(getActivity(), Detail.class);
 //                            intent1.putExtra("url",eResponse.events.get(position).getLogo().getOriginal().getUrl());
 //                            intent1.putExtra("name",eResponse.events.get(position).getName().getText());
                 data.moveToPosition(position);
                 Gson gson = new Gson();
-                Event event = gson.fromJson(data.getString(data.getColumnIndex("event")), Event.class );
+                Event event = gson.fromJson(data.getString(data.getColumnIndex("event")), Event.class);
 
-                intent1.putExtra("Event",event);
+                intent1.putExtra("Event", event);
 
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -203,7 +183,7 @@ public class FavFragment extends Fragment  implements
                 );
 
 
-                startActivity(intent1,options.toBundle());
+                startActivity(intent1, options.toBundle());
 
 
             }
@@ -228,7 +208,7 @@ public class FavFragment extends Fragment  implements
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
@@ -237,7 +217,6 @@ public class FavFragment extends Fragment  implements
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 
 
 }

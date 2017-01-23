@@ -32,14 +32,19 @@ public class EventsProvider extends ContentProvider {
 
     static final String id = "id";
     static final String event = "event";
-    static final String eDBID ="eDBID";
+    static final String eDBID = "eDBID";
     ;
     static final int uriCode = 1;
-
-    private static HashMap<String, String> values;
-
     // Used to match uris with Content Providers
     static final UriMatcher uriMatcher;
+    static final String DATABASE_NAME = "favEvents";
+    static final String TABLE_NAME = "userFav";
+    static final int DATABASE_VERSION = 1;
+    static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME
+            + " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + "eDBID TEXT NOT NULL, "
+            + " event TEXT NOT NULL);";
+    private static HashMap<String, String> values;
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -48,17 +53,10 @@ public class EventsProvider extends ContentProvider {
     }
 
     private SQLiteDatabase sqlDB;
-    static final String DATABASE_NAME = "favEvents";
-    static final String TABLE_NAME = "userFav";
-    static final int DATABASE_VERSION = 1;
-    static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME
-            + " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
-            +    "eDBID TEXT NOT NULL, "
-            + " event TEXT NOT NULL);";
-
 
     @Override
-    public boolean onCreate() {DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+    public boolean onCreate() {
+        DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         sqlDB = dbHelper.getWritableDatabase();
         if (sqlDB != null) {
             return true;

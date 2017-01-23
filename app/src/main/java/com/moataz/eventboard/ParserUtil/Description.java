@@ -11,14 +11,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Description implements Parcelable {
 
-    @SerializedName("text")
-    @Expose
-    private String text;
-
-    protected Description(Parcel in) {
-        text = in.readString();
-    }
-
     public static final Creator<Description> CREATOR = new Creator<Description>() {
         @Override
         public Description createFromParcel(Parcel in) {
@@ -30,6 +22,13 @@ public class Description implements Parcelable {
             return new Description[size];
         }
     };
+    @SerializedName("text")
+    @Expose
+    private String text;
+
+    protected Description(Parcel in) {
+        text = in.readString();
+    }
 
     public String getText() {
         return text;
@@ -38,7 +37,6 @@ public class Description implements Parcelable {
     public void setText(String text) {
         this.text = text;
     }
-
 
 
     @Override

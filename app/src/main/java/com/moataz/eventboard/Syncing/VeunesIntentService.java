@@ -16,7 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 /**
  * Created by moataz on 22/01/17.
@@ -31,14 +30,16 @@ public class VeunesIntentService extends IntentService {
     Intent broadcastIntent;
     private Context mContext;
 
-    public VeunesIntentService() {super("VeunesIntentService");}
+    public VeunesIntentService() {
+        super("VeunesIntentService");
+    }
 
 
     @Override
     protected void onHandleIntent(Intent intent) {
 
 
-        if (mContext == null){
+        if (mContext == null) {
             mContext = this;
         }
 
@@ -60,25 +61,23 @@ public class VeunesIntentService extends IntentService {
         MyApiEndpointInterface apiService =
                 retrofit.create(MyApiEndpointInterface.class);
 
-        Call<VenuesResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY, vid );
+        Call<VenuesResponse> call = apiService.getEvents("Bearer " + BuildConfig.EVENTBRITE_APIKEY, vid);
         call.enqueue(new Callback<VenuesResponse>() {
             @Override
             public void onResponse(Call<VenuesResponse> call, Response<VenuesResponse> response) {
 //                int statusCode = response.code();
 
 
-
-                broadcastIntent.putExtra("response",response.body());
+                broadcastIntent.putExtra("response", response.body());
                 sendBroadcast(broadcastIntent);
 
             }
 
             @Override
             public void onFailure(Call<VenuesResponse> call, Throwable t) {
-                Log.d("EventBoard",t.getMessage());
+                Log.d("EventBoard", t.getMessage());
             }
         });
-
 
 
     }

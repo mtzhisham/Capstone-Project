@@ -7,35 +7,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
-
-import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 import com.bumptech.glide.Glide;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.gson.Gson;
 import com.moataz.MultiDexApplication.eventboard.R;
-
 import com.moataz.eventboard.ParserUtil.Event;
 import com.moataz.eventboard.ParserUtil.VenuesResponse;
-
 import com.moataz.eventboard.Syncing.VeunesIntentService;
 
 import icepick.Icepick;
@@ -47,43 +38,34 @@ import icepick.State;
 public class DetailFragment extends Fragment {
 
 
-
     public static final String ACTION_RESP =
             "com.moataz.intent.action.VENUE_PROCESSED";
-
+    public static final String ACTION_DATA_UPDATED = "com.moataz.ACTION_DATA_UPDATED";
+    public static final String VID = "VID";
+    private static IntentFilter filter;
     final Uri CONTENT_URL =
             Uri.parse("content://com.moataz.eventboard.DataUtil.EventsProvider/cpevents");
-
-
-    public static final String ACTION_DATA_UPDATED = "com.moataz.ACTION_DATA_UPDATED";
-
     @State
     Event event;
     @State
     String v_name;
-
     @State
     boolean there;
-
     @State
     boolean started;
-
     VenuesResponse vResponse;
     TextView venue_tv;
-    public static final String VID = "VID";
     ContentValues values;
     Context mContext;
-    private static IntentFilter filter;
     ContentResolver resolver;
     String name;
     View view;
     String eventID;
-     FloatingActionButton programFab1;
+    FloatingActionButton programFab1;
+    private VenueResponseReciver receiver;
 
     public DetailFragment() {
     }
-
-    private VenueResponseReciver receiver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,11 +119,9 @@ public class DetailFragment extends Fragment {
         venue_tv = (TextView) view.findViewById(R.id.venue_tv);
 
 
-
-
         Intent intent = getActivity().getIntent();
-        if (event == null){
-            event =  intent.getParcelableExtra("Event");
+        if (event == null) {
+            event = intent.getParcelableExtra("Event");
 
         }
 
@@ -149,7 +129,7 @@ public class DetailFragment extends Fragment {
         String url = event.getLogo().getUrl();
 
         name_tv.setText(event.getName().getText());
-        date_tv.setText(event.getStart().getLocal() + " to " +event.getEnd().getLocal());
+        date_tv.setText(event.getStart().getLocal() + " to " + event.getEnd().getLocal());
         desc_tv.setText(event.getDescription().getText());
         eventID = event.getId();
 
@@ -160,8 +140,6 @@ public class DetailFragment extends Fragment {
                 .into(imageView);
 
 
-
-
         final FloatingActionMenu menu = (FloatingActionMenu) view.findViewById(R.id.menu);
 
         programFab1 = new FloatingActionButton(getActivity());
@@ -169,18 +147,16 @@ public class DetailFragment extends Fragment {
 
         menu.addMenuButton(programFab1);
 
-        if(!started){
+        if (!started) {
             startService(event.getVenueId());
             new lookOnlyEvent().execute(eventID);
-            started =true;
+            started = true;
         }
-
 
 
         programFab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
 
                 values = new ContentValues();
@@ -217,7 +193,7 @@ public class DetailFragment extends Fragment {
 
         venue_tv.setText(v_name);
 
-        if(there){
+        if (there) {
             programFab1.setImageResource(R.drawable.ic_star_white_24dp);
         } else {
             programFab1.setImageResource(R.drawable.ic_star_grey600_24dp);
@@ -227,17 +203,40 @@ public class DetailFragment extends Fragment {
         return view;
     }
 
-    public void startService(String vid){
+    public void startService(String vid) {
         Intent msgIntent = new Intent(getContext(), VeunesIntentService.class);
         msgIntent.putExtra(VID, vid);
         getActivity().startService(msgIntent);
     }
 
+    public boolean lookupEvent(String id) {
+
+        String[] projection = new String[]{"id", "eDBID", "event"};
+
+
+        Cursor cursor = resolver.query(CONTENT_URL,
+                projection, "eDBID = ? ", new String[]{id}, null);
+
+
+        assert cursor != null;
+        if (cursor.moveToFirst()) {
+            String eventfromdb = cursor.getString(cursor.getColumnIndex("event"));
+            Log.d("lookup", eventfromdb);
+
+            cursor.close();
+            return true;
+        } else {
+            cursor.close();
+            return false;
+        }
+
+    }
+
     public class VenueResponseReciver extends BroadcastReceiver {
 
 
-        Intent intentt;
         private final Handler handler;
+        Intent intentt;
 
         public VenueResponseReciver(Handler handler) {
             this.handler = handler;
@@ -260,14 +259,12 @@ public class DetailFragment extends Fragment {
 
 
                 }
-                    });
-
-                }
-
+            });
 
         }
 
 
+    }
 
     private class AddEvent extends AsyncTask<ContentValues, Void, Boolean> {
 
@@ -284,7 +281,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
 
-            if (result){
+            if (result) {
 
                 Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
                 mContext.sendBroadcast(dataUpdatedIntent);
@@ -293,6 +290,7 @@ public class DetailFragment extends Fragment {
 
         }
     }
+
     private class DeleteEvent extends AsyncTask<String, Void, Boolean> {
 
 
@@ -305,7 +303,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
 
-            if (result){
+            if (result) {
 
                 Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
                 mContext.sendBroadcast(dataUpdatedIntent);
@@ -315,45 +313,19 @@ public class DetailFragment extends Fragment {
         }
     }
 
-
-    public boolean lookupEvent(String id){
-
-        String[] projection = new String[]{"id", "eDBID","event"};
-
-
-        Cursor cursor = resolver.query(CONTENT_URL,
-                projection, "eDBID = ? ", new String[]{id}, null);
-
-
-        assert cursor != null;
-        if(cursor.moveToFirst()){
-            String eventfromdb = cursor.getString(cursor.getColumnIndex("event"));
-            Log.d("lookup", eventfromdb);
-
-            cursor.close();
-            return true;
-        }else{
-            cursor.close();
-            return false;
-        }
-
-    }
-
-
-
     private class lookNCREvent extends AsyncTask<String, Void, Boolean> {
 
 
         @Override
         protected Boolean doInBackground(String... params) {
 
-                return lookupEvent(params[0]);
+            return lookupEvent(params[0]);
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
 
-            if (result){
+            if (result) {
 
 
                 new DeleteEvent().execute(eventID);
@@ -383,7 +355,7 @@ public class DetailFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
 
-            if (result){
+            if (result) {
 
                 programFab1.setImageResource(R.drawable.ic_star_white_24dp);
                 there = true;

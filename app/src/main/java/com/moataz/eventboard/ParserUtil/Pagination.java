@@ -13,15 +13,6 @@ import com.google.gson.annotations.SerializedName;
 public class Pagination implements Parcelable {
 
 
-
-    @SerializedName("page_count")
-    @Expose
-    private Integer pageCount;
-
-    protected Pagination(Parcel in) {
-        pageCount = in.readInt();
-    }
-
     public static final Creator<Pagination> CREATOR = new Creator<Pagination>() {
         @Override
         public Pagination createFromParcel(Parcel in) {
@@ -33,8 +24,13 @@ public class Pagination implements Parcelable {
             return new Pagination[size];
         }
     };
+    @SerializedName("page_count")
+    @Expose
+    private Integer pageCount;
 
-
+    protected Pagination(Parcel in) {
+        pageCount = in.readInt();
+    }
 
     public Integer getPageCount() {
         return pageCount;
@@ -43,8 +39,6 @@ public class Pagination implements Parcelable {
     public void setPageCount(Integer pageCount) {
         this.pageCount = pageCount;
     }
-
-
 
 
     @Override

@@ -3,8 +3,6 @@ package com.moataz.eventboard.Syncing;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-
-import android.util.Log;
 import android.widget.Toast;
 
 import com.moataz.MultiDexApplication.eventboard.BuildConfig;
@@ -29,17 +27,13 @@ public class EventsIntentService extends IntentService {
     public static final String PAGE = "PAGE";
     public static final String LAT = "LAT";
     public static final String LOG = "LOG";
+    public static final String ACTION_RESP =
+            "com.moataz.intent.action.EVENTS_PROCESSED";
     Intent broadcastIntent;
     private Context mContext;
 
 
-
-    public static final String ACTION_RESP =
-            "com.moataz.intent.action.EVENTS_PROCESSED";
-
-
-
-    public EventsIntentService(){
+    public EventsIntentService() {
         super("EventsIntentService");
     }
 
@@ -109,13 +103,12 @@ public class EventsIntentService extends IntentService {
     }
 
 
-
     public interface MyApiEndpointInterface {
         // Request method and URL specified in the annotation
         // Callback for the parsed response is the last parameter
 
         @GET("events/search/")
         Call<EventResponse> getEvents(@Header("Authorization") String apiKey, @Query("page") String page,
-                                      @Query("location.address") String address,@Query("location.latitude") String lat,@Query("location.longitude") String log);
+                                      @Query("location.address") String address, @Query("location.latitude") String lat, @Query("location.longitude") String log);
     }
 }

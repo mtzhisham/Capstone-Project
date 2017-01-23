@@ -24,7 +24,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -32,23 +31,17 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.gson.Gson;
 import com.moataz.MultiDexApplication.eventboard.R;
 import com.moataz.eventboard.DataUtil.EventsAdapter;
 import com.moataz.eventboard.ParserUtil.Event;
 import com.moataz.eventboard.ParserUtil.EventResponse;
 import com.moataz.eventboard.Syncing.EventsIntentService;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import icepick.Icepick;
 import icepick.State;
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Query;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,56 +52,43 @@ import retrofit2.http.Query;
  * create an instance of this fragment.
  */
 public class EventsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    int PLACE_PICKER_REQUEST = 1;
-
-     EventResponse eResponse;
-
     public static final String ACTION_RESP =
             "com.moataz.intent.action.EVENTS_PROCESSED";
-
     public static final String ADDRESS = "ADDRESS";
     public static final String PAGE = "PAGE";
     public static final String LAT = "LAT";
     public static final String LOG = "LOG";
+    public static final String ARG_PAGE = "ARG_PAGE";
+    public static Context context;
+    public static Activity activity;
+    private static IntentFilter filter;
     @State
     public Integer page = 1;
-
-    private static IntentFilter filter;
-
-
-   List<Event> events;
-
     @State
     public boolean Firsttime = true;
-
-    @State
-     boolean init = true;
-
-    public static final String ARG_PAGE = "ARG_PAGE";
     public View view;
     public RecyclerView rvEvents;
-
-
-    EventsAdapter adapter;
-
-    SharedPreferences sharedPref;
-
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    int PLACE_PICKER_REQUEST = 1;
+    EventResponse eResponse;
+    List<Event> events;
     @State
-     int mPage;
+    boolean init = true;
+    EventsAdapter adapter;
 
 
     // TODO: Rename and change types of parameters
-
-
+    SharedPreferences sharedPref;
+    @State
+    int mPage;
     private OnFragmentInteractionListener mListener;
-
+    private EventsResponseReciver receiver;
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
     public EventsFragment() {
         // Required empty public constructor
     }
-
-
 
     public static EventsFragment newInstance(int page) {
         EventsFragment fragment = new EventsFragment();
@@ -119,10 +99,7 @@ public class EventsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    private EventsResponseReciver receiver;
 
-    public static Context context;
-    public static Activity activity;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,23 +117,25 @@ public class EventsFragment extends Fragment {
         receiver = new EventsResponseReciver(new Handler());
         getActivity().registerReceiver(receiver, filter);
 
-if (savedInstanceState != null) {
-    if (savedInstanceState.containsKey("events")) {
-        if (events == null) {
-            events = savedInstanceState.getParcelableArrayList("events");
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("events")) {
+                if (events == null) {
+                    events = savedInstanceState.getParcelableArrayList("events");
+                }
+            }
         }
-    }
-}
         Icepick.restoreInstanceState(this, savedInstanceState);
 
     }
 
-    @Override public void onSaveInstanceState(Bundle outState) {
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList("events", (ArrayList<? extends Parcelable>) events);
         Icepick.saveInstanceState(this, outState);
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -169,22 +148,20 @@ if (savedInstanceState != null) {
         super.onPause();
         getActivity().unregisterReceiver(receiver);
     }
-    // Store a member variable for the listener
-    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_events, container, false);
+        view = inflater.inflate(R.layout.fragment_events, container, false);
 //        TextView tvTitle = (TextView) view.findViewById(R.id.tv);
 //        tvTitle.setText("Fragment #" + mPage);
-        if (events == null){
+        if (events == null) {
             events = new ArrayList<Event>();
         }
 
         adapter = new EventsAdapter(context, events);
-        rvEvents = (RecyclerView)  view.findViewById(R.id.rvEvents);
+        rvEvents = (RecyclerView) view.findViewById(R.id.rvEvents);
         // Attach the adapter to the recyclerview to populate items
         rvEvents.setAdapter(adapter);
 
@@ -193,21 +170,18 @@ if (savedInstanceState != null) {
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
 
 
-
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
 
-               if(page < mPage) {
+                if (page < mPage) {
 
-                   loadNextDataFromApi(page);
-               }
+                    loadNextDataFromApi(page);
+                } else {
+                    Snackbar snackbar = Snackbar
+                            .make(view, getResources().getString(R.string.no_events), Snackbar.LENGTH_LONG);
 
-               else{
-                   Snackbar snackbar = Snackbar
-                           .make(view, getResources().getString(R.string.no_events), Snackbar.LENGTH_LONG);
-
-                   snackbar.show();
-               }
+                    snackbar.show();
+                }
             }
         };
 
@@ -215,14 +189,14 @@ if (savedInstanceState != null) {
         rvEvents.addOnScrollListener(scrollListener);
 
 
-       sharedPref =getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 
-        Float lat = sharedPref.getFloat("lat",5);
-        Float log = sharedPref.getFloat("log",5);
+        Float lat = sharedPref.getFloat("lat", 5);
+        Float log = sharedPref.getFloat("log", 5);
 
         if (init) {
-            startService(sharedPref.getString("place", "NY, USA"), "1",lat.toString(),log.toString());
-        init = false;
+            startService(sharedPref.getString("place", "NY, USA"), "1", lat.toString(), log.toString());
+            init = false;
         }
 
 
@@ -230,7 +204,7 @@ if (savedInstanceState != null) {
             @Override
             public void onItemClick(int position, View v) {
 
-                if (activity!=null && isAdded()) {
+                if (activity != null && isAdded()) {
 
                     Intent intent1 = new Intent(activity, Detail.class);
 
@@ -260,11 +234,10 @@ if (savedInstanceState != null) {
             }
 
             @Override
-            public void onItemLongClick ( int position, View v){
+            public void onItemLongClick(int position, View v) {
 
             }
         });
-
 
 
         return view;
@@ -275,25 +248,23 @@ if (savedInstanceState != null) {
     public void loadNextDataFromApi(int offset) {
 
 
-
         // Send an API request to retrieve appropriate paginated data
         //  --> Send the request including an offset value (i.e `page`) as a query parameter.
         //  --> Deserialize and construct new model objects from the API response
         //  --> Append the new data objects to the existing set of items inside the array of items
         //  --> Notify the adapter of the new items made with `notifyDataSetChanged()`
 
-       page = offset+1;
-        Float lat = sharedPref.getFloat("lat",5);
-        Float log = sharedPref.getFloat("log",5);
+        page = offset + 1;
+        Float lat = sharedPref.getFloat("lat", 5);
+        Float log = sharedPref.getFloat("log", 5);
 
-        startService(sharedPref.getString("place","NY, USA"), lat.toString(), log.toString(), page.toString());
+        startService(sharedPref.getString("place", "NY, USA"), lat.toString(), log.toString(), page.toString());
 
 
     }
 
 
-
-    public void startService(String address, String page, String lat, String log){
+    public void startService(String address, String page, String lat, String log) {
         Intent msgIntent = new Intent(getContext(), EventsIntentService.class);
         msgIntent.putExtra(ADDRESS, address);
         msgIntent.putExtra(PAGE, page);
@@ -303,9 +274,6 @@ if (savedInstanceState != null) {
 
         getActivity().startService(msgIntent);
     }
-
-
-
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -331,22 +299,6 @@ if (savedInstanceState != null) {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
 
     @Override
     public void setHasOptionsMenu(boolean hasMenu) {
@@ -375,7 +327,6 @@ if (savedInstanceState != null) {
         }
     }
 
-
     public void pickLocation() {
 
 
@@ -400,29 +351,23 @@ if (savedInstanceState != null) {
                 LatLng lg = latLng.getCenter();
 
 
-
-
                 scrollListener.resetState();
                 Firsttime = true;
                 Double lat = lg.latitude;
                 Double log = lg.longitude;
-                startService(address,lat.toString(), log.toString(),"1");
-
+                startService(address, lat.toString(), log.toString(), "1");
 
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putFloat("lat", (float) lg.latitude);
                 editor.putFloat("long", (float) lg.longitude);
-                editor.putString("place",address);
+                editor.putString("place", address);
                 editor.apply();
-
-
 
 
             }
         }
-}
-
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -432,17 +377,31 @@ if (savedInstanceState != null) {
 
     }
 
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
     public class EventsResponseReciver extends BroadcastReceiver {
 
 
-
-        Intent intentt;
         private final Handler handler;
+        Intent intentt;
 
         public EventsResponseReciver(Handler handler) {
             this.handler = handler;
         }
-
 
 
         @Override
@@ -450,46 +409,45 @@ if (savedInstanceState != null) {
             this.intentt = intent;
 
 
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
 
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        eResponse = intentt.getParcelableExtra("response");
-
-
-                        if (eResponse != null) {
-                            mPage = eResponse.getPagination().getPageCount();
-                            Log.d("adapter", eResponse.getPagination().getPageCount().toString());
+                    eResponse = intentt.getParcelableExtra("response");
 
 
-                            if (Firsttime) {
-                                events.clear();
-                                events.addAll(eResponse.events);
-                                Firsttime = false;
+                    if (eResponse != null) {
+                        mPage = eResponse.getPagination().getPageCount();
+                        Log.d("adapter", eResponse.getPagination().getPageCount().toString());
 
 
-                            } else {
-
-                                events.addAll(eResponse.events);
-                                int curSize = adapter.getItemCount();
-
-
-                                adapter.notifyItemRangeInserted(curSize, events.size() - 1);
-
-
-                            }
+                        if (Firsttime) {
+                            events.clear();
+                            events.addAll(eResponse.events);
+                            Firsttime = false;
 
 
                         } else {
-                            Snackbar snackbar = Snackbar
-                                    .make(view, getResources().getString(R.string.no_events), Snackbar.LENGTH_LONG);
 
-                            snackbar.show();
+                            events.addAll(eResponse.events);
+                            int curSize = adapter.getItemCount();
+
+
+                            adapter.notifyItemRangeInserted(curSize, events.size() - 1);
+
+
                         }
-                    }
 
-                });
+
+                    } else {
+                        Snackbar snackbar = Snackbar
+                                .make(view, getResources().getString(R.string.no_events), Snackbar.LENGTH_LONG);
+
+                        snackbar.show();
+                    }
+                }
+
+            });
 
 
             adapter.notifyDataSetChanged();

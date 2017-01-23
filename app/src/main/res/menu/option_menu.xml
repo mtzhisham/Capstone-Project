@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:id="@+id/place"
+    <item
+        android:id="@+id/place"
         android:title="@string/place_select" />
 
 </menu>

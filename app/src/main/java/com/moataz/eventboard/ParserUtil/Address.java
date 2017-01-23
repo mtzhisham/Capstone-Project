@@ -3,23 +3,16 @@ package com.moataz.eventboard.ParserUtil;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Created by moataz on 22/01/17.
  */
 public class Address implements Parcelable {
 
-
-    @SerializedName("localized_multi_line_address_display")
-    @Expose
-    private List<String> localizedMultiLineAddressDisplay = null;
-
-    protected Address(Parcel in) {
-        localizedMultiLineAddressDisplay = in.createStringArrayList();
-    }
 
     public static final Creator<Address> CREATOR = new Creator<Address>() {
         @Override
@@ -32,6 +25,13 @@ public class Address implements Parcelable {
             return new Address[size];
         }
     };
+    @SerializedName("localized_multi_line_address_display")
+    @Expose
+    private List<String> localizedMultiLineAddressDisplay = null;
+
+    protected Address(Parcel in) {
+        localizedMultiLineAddressDisplay = in.createStringArrayList();
+    }
 
     public List<String> getLocalizedMultiLineAddressDisplay() {
         return localizedMultiLineAddressDisplay;

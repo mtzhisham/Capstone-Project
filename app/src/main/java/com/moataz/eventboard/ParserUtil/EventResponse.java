@@ -14,41 +14,6 @@ import java.util.List;
  */
 public class EventResponse implements Parcelable {
 
-    @SerializedName("pagination")
-    @Expose
-    private Pagination pagination;
-
-    public Pagination getPagination() {
-        return pagination;
-    }
-
-    public void setPagination(Pagination pagination) {
-        this.pagination = pagination;
-    }
-
-   public List<Event> events;
-
-    public  EventResponse(){
-        events = new ArrayList<Event>();
-    }
-
-
-    protected EventResponse(Parcel in) {
-        events = in.createTypedArrayList(Event.CREATOR);
-        pagination = in.readParcelable(Pagination.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(events);
-        dest.writeParcelable(pagination,flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public static final Creator<EventResponse> CREATOR = new Creator<EventResponse>() {
         @Override
         public EventResponse createFromParcel(Parcel in) {
@@ -60,4 +25,36 @@ public class EventResponse implements Parcelable {
             return new EventResponse[size];
         }
     };
+    public List<Event> events;
+    @SerializedName("pagination")
+    @Expose
+    private Pagination pagination;
+
+    public EventResponse() {
+        events = new ArrayList<Event>();
+    }
+
+    protected EventResponse(Parcel in) {
+        events = in.createTypedArrayList(Event.CREATOR);
+        pagination = in.readParcelable(Pagination.class.getClassLoader());
+    }
+
+    public Pagination getPagination() {
+        return pagination;
+    }
+
+    public void setPagination(Pagination pagination) {
+        this.pagination = pagination;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(events);
+        dest.writeParcelable(pagination, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }

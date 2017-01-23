@@ -33,7 +33,6 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
     }
 
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
@@ -67,8 +66,6 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
         }
 
 
-
-
     }
 
 
@@ -76,15 +73,9 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
         CustomCEventAdapter.clickListener = clickListener;
     }
 
-    public interface ClickListener {
-        void onItemClick(int position, View v);
-        void onItemLongClick(int position, View v);
-    }
-
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                Context context = parent.getContext();
+        Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
@@ -99,14 +90,11 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
 
 
-
-
         // Get the data model based on position
-       cursor.moveToPosition(position);
+        cursor.moveToPosition(position);
         Gson gson = new Gson();
 
-        Event event = gson.fromJson(cursor.getString(cursor.getColumnIndex("event")), Event.class );
-
+        Event event = gson.fromJson(cursor.getString(cursor.getColumnIndex("event")), Event.class);
 
 
         // Set item views based on your views and data model
@@ -125,7 +113,7 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
                     .placeholder(R.mipmap.ic_launcher)
                     .into(posterImageView);
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
 
             posterImageView.setImageDrawable(mContext.getDrawable(R.mipmap.ic_launcher));
@@ -133,8 +121,11 @@ public class CustomCEventAdapter extends RecyclerView.Adapter<CustomCEventAdapte
 
     }
 
+    public interface ClickListener {
+        void onItemClick(int position, View v);
 
-
+        void onItemLongClick(int position, View v);
+    }
 
 
     @Override

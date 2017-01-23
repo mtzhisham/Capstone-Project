@@ -14,6 +14,17 @@ import com.google.gson.annotations.SerializedName;
 public class VenuesResponse implements Parcelable {
 
 
+    public static final Creator<VenuesResponse> CREATOR = new Creator<VenuesResponse>() {
+        @Override
+        public VenuesResponse createFromParcel(Parcel in) {
+            return new VenuesResponse(in);
+        }
+
+        @Override
+        public VenuesResponse[] newArray(int size) {
+            return new VenuesResponse[size];
+        }
+    };
     @SerializedName("address")
     @Expose
     private Address address;
@@ -41,18 +52,6 @@ public class VenuesResponse implements Parcelable {
         latitude = in.readString();
         longitude = in.readString();
     }
-
-    public static final Creator<VenuesResponse> CREATOR = new Creator<VenuesResponse>() {
-        @Override
-        public VenuesResponse createFromParcel(Parcel in) {
-            return new VenuesResponse(in);
-        }
-
-        @Override
-        public VenuesResponse[] newArray(int size) {
-            return new VenuesResponse[size];
-        }
-    };
 
     public Address getAddress() {
         return address;
@@ -109,7 +108,7 @@ public class VenuesResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeParcelable(address,i);
+        parcel.writeParcelable(address, i);
         parcel.writeString(resourceUri);
         parcel.writeString(id);
         parcel.writeString(name);
