@@ -71,6 +71,8 @@ public class EventsAdapter extends  RecyclerView.Adapter<EventsAdapter.ViewHolde
 
     }
 
+
+
     public void setOnItemClickListener(ClickListener clickListener) {
         EventsAdapter.clickListener = clickListener;
     }

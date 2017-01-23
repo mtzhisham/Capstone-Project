@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.plus.model.people.Person;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

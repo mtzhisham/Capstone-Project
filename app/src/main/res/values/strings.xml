@@ -21,10 +21,13 @@
     <string name="tabs_desc">tabs</string>
     <string name="place_select">place</string>
     <string name="conn_toast">something is wrong!</string>
+    <string name="error_toast">hmmm can not do that now!</string>
+    <string name="no_events">no more events</string>
 
 
 
-
+    
+    
 
 
 

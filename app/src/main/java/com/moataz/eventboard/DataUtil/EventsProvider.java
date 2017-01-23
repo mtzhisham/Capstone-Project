@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.moataz.MultiDexApplication.eventboard.R;
+
 import java.util.HashMap;
 
 /**
@@ -130,7 +132,7 @@ public class EventsProvider extends ContentProvider {
             // Return the Builder used to manipulate the URI
             return _uri;
         }
-        Toast.makeText(getContext(), "Row Insert Failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getResources().getString(R.string.error_toast), Toast.LENGTH_LONG).show();
         return null;
     }
 

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -150,10 +151,6 @@ if (savedInstanceState != null) {
 
     }
 
-    boolean mDualPane;
-
-
-
     @Override public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -164,6 +161,7 @@ if (savedInstanceState != null) {
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(receiver, filter);
+        activity = getActivity();
     }
 
     @Override
@@ -206,7 +204,7 @@ if (savedInstanceState != null) {
 
                else{
                    Snackbar snackbar = Snackbar
-                           .make(view, "No More Events", Snackbar.LENGTH_LONG);
+                           .make(view, getResources().getString(R.string.no_events), Snackbar.LENGTH_LONG);
 
                    snackbar.show();
                }
@@ -226,6 +224,47 @@ if (savedInstanceState != null) {
             startService(sharedPref.getString("place", "NY, USA"), "1",lat.toString(),log.toString());
         init = false;
         }
+
+
+        adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+
+                if (activity!=null && isAdded()) {
+
+                    Intent intent1 = new Intent(activity, Detail.class);
+
+                    intent1.putExtra("Event", events.get(position));
+
+
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            // the context of the activity
+                            activity,
+
+                            // For each shared element, add to this method a new Pair item,
+                            // which contains the reference of the view we are transitioning *from*,
+                            // and the value of the transitionName attribute
+                            new Pair<View, String>(v.findViewById(R.id.imageView),
+                                    getString(R.string.transition_name_image))
+                            ,
+                            new Pair<View, String>(view.findViewById(R.id.event_name),
+                                    getString(R.string.transition_name_name)),
+                            new Pair<View, String>(view.findViewById(R.id.event_date),
+                                    getString(R.string.transition_name_date))
+                    );
+
+
+                    startActivity(intent1, options.toBundle());
+                }
+
+            }
+
+            @Override
+            public void onItemLongClick ( int position, View v){
+
+            }
+        });
+
 
 
         return view;
@@ -384,6 +423,15 @@ if (savedInstanceState != null) {
         }
 }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        activity = getActivity();
+
+    }
+
     public class EventsResponseReciver extends BroadcastReceiver {
 
 
@@ -401,90 +449,47 @@ if (savedInstanceState != null) {
         public void onReceive(final Context context, final Intent intent) {
             this.intentt = intent;
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-
-                    eResponse = intentt.getParcelableExtra("response");
 
 
-                    if (eResponse != null){
-                        mPage = eResponse.getPagination().getPageCount();
-                        Log.d("adapter", eResponse.getPagination().getPageCount().toString());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        eResponse = intentt.getParcelableExtra("response");
 
 
-
-                    if(Firsttime){
-                        events.clear();
-                        events.addAll(eResponse.events);
-                        Firsttime = false;
-
-                    adapter.setOnItemClickListener(new EventsAdapter.ClickListener() {
-                        @Override
-                        public void onItemClick(int position, View v) {
+                        if (eResponse != null) {
+                            mPage = eResponse.getPagination().getPageCount();
+                            Log.d("adapter", eResponse.getPagination().getPageCount().toString());
 
 
-                            Intent intent1 = new Intent(getActivity(),Detail.class);
-
-                            intent1.putExtra("Event",events.get(position));
-
-
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    // the context of the activity
-                                    getActivity(),
-
-                                    // For each shared element, add to this method a new Pair item,
-                                    // which contains the reference of the view we are transitioning *from*,
-                                    // and the value of the transitionName attribute
-                                    new Pair<View, String>(v.findViewById(R.id.imageView),
-                                            getString(R.string.transition_name_image))
-                                    ,
-                                    new Pair<View, String>(view.findViewById(R.id.event_name),
-                                            getString(R.string.transition_name_name)),
-                                    new Pair<View, String>(view.findViewById(R.id.event_date),
-                                            getString(R.string.transition_name_date))
-                            );
+                            if (Firsttime) {
+                                events.clear();
+                                events.addAll(eResponse.events);
+                                Firsttime = false;
 
 
-                            startActivity(intent1,options.toBundle());
+                            } else {
+
+                                events.addAll(eResponse.events);
+                                int curSize = adapter.getItemCount();
 
 
+                                adapter.notifyItemRangeInserted(curSize, events.size() - 1);
+
+
+                            }
+
+
+                        } else {
+                            Snackbar snackbar = Snackbar
+                                    .make(view, getResources().getString(R.string.no_events), Snackbar.LENGTH_LONG);
+
+                            snackbar.show();
                         }
-
-                        @Override
-                        public void onItemLongClick(int position, View v) {
-
-                        }
-                    });
-
-                } else{
-
-                        events.addAll(eResponse.events);
-                        int curSize = adapter.getItemCount();
-
-
-                        adapter.notifyItemRangeInserted(curSize, events.size() - 1);
-
-
                     }
 
-
-
-
-                }
-
-                    else{
-                        Snackbar snackbar = Snackbar
-                                .make(view, "No Events", Snackbar.LENGTH_LONG);
-
-                        snackbar.show();
-                    }
-                }
-
-            });
-
-
-
+                });
 
 
             adapter.notifyDataSetChanged();
